@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">DevNews</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="title_activity_welcome">Welcome</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+    <string name="unknown_account_type">Unknown account type.</string>
+    <string name="unknown_auth_token_type">Unknown authentication token type.</string>
+
+    <string name="error_unknown">An unknown error occurred. Please try again later.</string>
+    <string name="error_invalid_credentials">Invalid username/password.</string>
+    <string name="error_bad_request">Please check the values you entered and try again.</string>
+    <string name="add_account_activity">Add Account</string>
+    <string name="relogin_title">Re-enter credentials</string>
+    <string name="relogin_info">To continue, please re-enter your DevNews account information.</string>
+    <string name="username_empty">Username cannot be empty.</string>
+    <string name="password_empty">Password cannot be empty.</string>
+    <string name="welcome_title">Welcome to DevNews!</string>
+    <string name="welcome_subtitle">DevNews is a community focused on news about technology and computing.</string>
+    <string name="login_button">Login</string>
+    <string name="register_button">Register</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="forgot_my_password">Forgot my password</string>
+    <string name="login_problems">Problems logging in? Contact us!</string>
+</resources>
