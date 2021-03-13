@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -34,6 +35,12 @@ class HomeFragment : Fragment() {
         binding.storyList.adapter = adapter
         binding.storyList.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        binding.storyList.addItemDecoration(
+            DividerItemDecoration(
+                requireContext(),
+                DividerItemDecoration.VERTICAL
+            )
+        )
 
         // Display list after stories load
         viewModel.stories.observe(viewLifecycleOwner) {
