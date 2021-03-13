@@ -2,16 +2,50 @@
     <!-- Base application theme. -->
     <style name="Theme.DevNews" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryVariant">@color/primaryDarkColor</item>
+        <item name="colorOnPrimary">@color/primaryTextColor</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondary">@color/secondaryColor</item>
+        <item name="colorSecondaryVariant">@color/secondaryDarkColor</item>
+        <item name="colorOnSecondary">@color/secondaryTextColor</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
-        <item name="android:textColor">@color/white</item>
+        <item name="android:colorBackground">@color/darkBackground</item>
+        <item name="colorOnBackground">@color/darkText</item>
+
+        <!-- Android theming is completely and utterly broken and anybody saying otherwise is under
+        the effects of Stockholm syndrome. I had to pull my hair out for an hour^W^W TWO HOURS trying to figure out
+        which obscure knob changes each SEPARATE widget's color. Not only are they completely unrelated,
+        but the supposed "material component" thing makes everything so much worse. For the drawer
+        button it's "color", for the overflow button it's "tint", and for the title of the toolbar
+        it's "colorOnPrimary". Decide on a name!!!!!! -->
+        <!-- Oh and it turns out it's because once you use Widget.MaterialComponents you're supposed
+        to use MaterialToolbar because otherwise it will become a Frankenstein's monster between
+        Android's Material and Material Components' Material. So the above can be avoided if you
+        just search for 3 hours on shady Android tutorial websites. -->
+        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
+        <item name="chipStyle">@style/Widget.App.Chip</item>
+    </style>
+
+    <style name="Widget.App.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.DevNews.Toolbar</item>
+    </style>
+
+    <style name="ThemeOverlay.DevNews.Toolbar" parent="">
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryVariant">@color/primaryDarkColor</item>
+        <item name="colorOnPrimary">@color/primaryTextColor</item>
+        <item name="colorControlNormal">@color/primaryTextColor</item>
+        <item name="colorControlHighlight">@color/primaryTextRipple</item>
+    </style>
+
+    <style name="Widget.App.Chip" parent="Widget.MaterialComponents.Chip.Action">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.DevNews.Chip</item>
+    </style>
+
+    <style name="ThemeOverlay.DevNews.Chip" parent="">
+        <item name="colorSurface">@color/darkChipBackground</item>
     </style>
 </resources>

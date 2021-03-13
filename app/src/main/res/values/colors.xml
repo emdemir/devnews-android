@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- from material.io -->
+    <color name="primaryColor">#50aded</color>
+    <color name="primaryLightColor">#86c3ed</color>
+    <color name="primaryDarkColor">#3676a1</color>
+    <color name="secondaryColor">#81c784</color>
+    <color name="secondaryLightColor">#b2fab4</color>
+    <color name="secondaryDarkColor">#519657</color>
+    <color name="primaryTextColor">#000000</color>
+    <color name="primaryTextRipple">#3f000000</color>
+    <color name="secondaryTextColor">#000000</color>
+
+    <color name="lightBackground">#ffffff</color>
+    <color name="lightText">#21242b</color>
+
+    <color name="darkBackground">#21242b</color>
+    <color name="darkChipBackground">#282c34</color>
+    <color name="darkText">#ffffff</color>
 </resources>
