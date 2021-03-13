@@ -1,5 +1,6 @@
 package org.devnews.android.welcome
 
+import android.content.Context
 import android.text.TextUtils
 import android.util.Log
 import androidx.annotation.LayoutRes
@@ -17,8 +18,7 @@ class LoginViewModel constructor(
     private val _loggingIn = MutableLiveData(false)
     private val _loggedIn = MutableLiveData(false)
     private val _token = MutableLiveData<String?>()
-    private val _errorCode = MutableLiveData(0)
-    private val _errorMessage = MutableLiveData("")
+    private val _error = MutableLiveData<String?>()
 
     // Two way data binding with layout
     val username = MutableLiveData("")
@@ -27,8 +27,7 @@ class LoginViewModel constructor(
     val loggingIn: LiveData<Boolean> = _loggingIn
     val loggedIn: LiveData<Boolean> = _loggedIn
     val token: LiveData<String?> = _token
-    val errorCode: LiveData<Int> = _errorCode
-    val errorMessage: LiveData<String> = _errorMessage
+    val error: LiveData<String?> = _error
 
     /**
      * Validates the value of the username, and returns a string resource as error if it fails
@@ -64,11 +63,9 @@ class LoginViewModel constructor(
         return status
     }
 
-    fun loginUser() {
+    fun loginUser(context: Context) {
         _loggingIn.value = true
         _loggedIn.value = false
-        _errorCode.value = 0
-        _errorMessage.value = ""
         Log.d(TAG, "Logging in the user, username: " + username.value)
 
         viewModelScope.launch {
@@ -86,21 +83,21 @@ class LoginViewModel constructor(
                 when (e.code()) {
                     400 -> {
                         Log.d(TAG, "Bad request, apparently.")
-                        _errorMessage.value = getError(e.response()!!)
+                        _error.value = getError(e.response()!!)
                     }
                     403 -> {
                         Log.d(TAG, "Invalid password")
-                        _errorCode.value = R.string.error_invalid_credentials
+                        _error.value = context.getString(R.string.error_invalid_credentials)
                     }
                     else -> {
                         Log.d(TAG, "Unknown error")
-                        _errorCode.value = R.string.error_unknown
+                        _error.value = context.getString(R.string.error_unknown)
                     }
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Login failure!", e)
                 _loggingIn.value = false
-                _errorCode.value = R.string.error_unknown
+                _error.value = context.getString(R.string.error_unknown)
             }
         }
     }

@@ -23,10 +23,6 @@ class LoginFragment : Fragment() {
         (requireActivity().application as DevNews).container.loginViewModelFactory
     })
 
-    // Used to provide the layout with an error message that is sourced from either a R.string
-    // code, or an actual string (from the server).
-    private val errorMessage = MutableLiveData("")
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -34,18 +30,13 @@ class LoginFragment : Fragment() {
         binding = FragmentLoginBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         binding.viewmodel = viewModel
-        binding.error = errorMessage
 
         // When login is clicked, login the user
         binding.loginButton.setOnClickListener {
             if (validate()) {
-                viewModel.loginUser()
+                viewModel.loginUser(requireContext())
             }
         }
-
-        // When error message or code is updated in the viewmodel, fetch it
-        viewModel.errorCode.observe(viewLifecycleOwner) { updateErrorMessage() }
-        viewModel.errorMessage.observe(viewLifecycleOwner) { updateErrorMessage() }
 
         // When the user changes the contents of the username or password field, hide the error
         binding.loginUsername.editText?.addTextChangedListener(TextChanged { validateUsername() })
@@ -75,16 +66,6 @@ class LoginFragment : Fragment() {
                 null
             else
                 getString(it)
-        }
-    }
-
-    private fun updateErrorMessage() {
-        errorMessage.value = when {
-            viewModel.errorCode.value != 0 ->
-                getString(viewModel.errorCode.value!!)
-            viewModel.errorMessage.value != "" ->
-                viewModel.errorMessage.value
-            else -> ""
         }
     }
 

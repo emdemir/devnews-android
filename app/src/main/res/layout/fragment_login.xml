@@ -8,15 +8,13 @@
         <variable
             name="viewmodel"
             type="org.devnews.android.welcome.LoginViewModel" />
-        <variable
-            name="error"
-            type="androidx.lifecycle.LiveData&lt;String>" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".welcome.LoginFragment">
+        tools:context=".welcome.LoginFragment"
+        tools:showIn="@layout/content_welcome">
 
         <FrameLayout
             android:id="@+id/progress_container"
@@ -122,7 +120,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text='@{error}'
+            android:text='@{viewmodel.error}'
             android:textColor="@color/design_default_color_error"
             app:layout_constraintBottom_toBottomOf="@+id/login_contact_text"
             app:layout_constraintEnd_toEndOf="parent"
