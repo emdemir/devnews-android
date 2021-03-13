@@ -15,6 +15,7 @@ import org.devnews.android.account.getAccountDetails
 import retrofit2.Response
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
+import java.util.concurrent.locks.ReentrantLock
 
 data class ErrorResponse(val error: String?, val errors: List<String>?)
 
@@ -44,6 +45,7 @@ class APIError(message: String?) : Exception(message)
 class TokenInterceptor(private val application: DevNews) : Interceptor {
     companion object {
         private var token: String? = null
+        private val lock = ReentrantLock()
         const val TAG = "TokenInterceptor"
     }
 
@@ -59,31 +61,37 @@ class TokenInterceptor(private val application: DevNews) : Interceptor {
         }
 
         // Get token if we don't have it
-        val tok = token.run {
-            if (this == null || JWT(this).isExpired(0)) {
-                Log.d(TAG, "Re-fetching token")
-                val activity = application.currentActivity
-                    ?: throw IllegalStateException("Application has no activity but is somehow making a request?!")
 
-                val response = getAccountDetails(activity)
-                val error = response.getString(AccountManager.KEY_ERROR_MESSAGE)
-                if (error != null) {
-                    // Apparently the token fetching failed. Possible culprits are
-                    // 1) User changed their password elsewhere
-                    // 2) The server is having issues
-                    Log.w(TAG, "Got error while fetching token! $error")
-                    throw APIError(error)
+        val tok = try {
+            lock.lock()
+            token.run {
+                if (this == null || JWT(this).isExpired(0)) {
+                    Log.d(TAG, "Re-fetching token")
+                    val activity = application.currentActivity
+                        ?: throw IllegalStateException("Application has no activity but is somehow making a request?!")
+
+                    val response = getAccountDetails(activity)
+                    val error = response.getString(AccountManager.KEY_ERROR_MESSAGE)
+                    if (error != null) {
+                        // Apparently the token fetching failed. Possible culprits are
+                        // 1) User changed their password elsewhere
+                        // 2) The server is having issues
+                        Log.w(TAG, "Got error while fetching token! $error")
+                        throw APIError(error)
+                    }
+
+                    // Get the token
+                    val tok = response.getString(AccountManager.KEY_AUTHTOKEN)
+                        ?: throw IllegalStateException("No error but token is missing?!")
+
+                    token = tok
+                    tok
+                } else {
+                    this
                 }
-
-                // Get the token
-                val tok = response.getString(AccountManager.KEY_AUTHTOKEN)
-                    ?: throw IllegalStateException("No error but token is missing?!")
-
-                token = tok
-                tok
-            } else {
-                this
             }
+        } finally {
+            lock.unlock()
         }
 
         Log.d(TAG, "Fetched token, adding it to the request")
