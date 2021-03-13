@@ -1,5 +1,7 @@
 package org.devnews.android.base
 
+import android.os.Bundle
+import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import org.devnews.android.DevNews
 
@@ -8,6 +10,13 @@ import org.devnews.android.DevNews
  * get the current activity from the application object. So this workaround is used.
  */
 open class Activity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val app = application as DevNews
+        if (app.currentActivity == null)
+            app.currentActivity = this
+    }
+
     override fun onResume() {
         super.onResume()
         (application as DevNews).currentActivity = this
