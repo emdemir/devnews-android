@@ -13,7 +13,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import org.devnews.android.DevNews
-import org.devnews.android.HomeActivity
+import org.devnews.android.home.HomeActivity
 import org.devnews.android.R
 import org.devnews.android.account.addAccount
 import org.devnews.android.account.getAccountDetails

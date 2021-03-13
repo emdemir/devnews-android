@@ -1,31 +1,30 @@
-package org.devnews.android
+package org.devnews.android.home
 
 import android.accounts.Account
 import android.accounts.AccountManager
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.navigation.NavigationView
+import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.NavHostFragment
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
-import kotlinx.coroutines.launch
+import org.devnews.android.DevNews
+import org.devnews.android.R
 import org.devnews.android.account.DevNewsAuthenticator
 import org.devnews.android.base.Activity
 import org.devnews.android.databinding.ActivityMainBinding
 
 class HomeActivity : Activity() {
-
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
@@ -63,17 +62,6 @@ class HomeActivity : Activity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-
-        // Send a test request to figure out authentication
-        lifecycleScope.launchWhenResumed {
-            AccountManager.get(applicationContext).setAuthToken(
-                Account("admin", DevNewsAuthenticator.ACCOUNT_TYPE),
-                DevNewsAuthenticator.AUTHTOKEN_TYPE,
-                null
-            )
-            val response = (application as DevNews).container.indexRepository.getIndex()
-            Log.d(TAG, Gson().toJson(response))
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
