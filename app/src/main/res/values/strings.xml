@@ -39,4 +39,13 @@
     <string name="password">Password</string>
     <string name="forgot_my_password">Forgot my password</string>
     <string name="login_problems">Problems logging in? Contact us!</string>
+    <string name="view_comments">View comments</string>
+    <string name="upvote">Upvote</string>
+    <string name="byline">%1$s by %2$s</string>
+    <string name="refresh_button">Refresh</string>
+    <string name="error_story_not_found">The story was not found. It may have been deleted by the submitter or by moderators.</string>
+    <string name="title_activity_story">Story</string>
+    <string name="write_a_new_comment">Write a new comment...</string>
+    <string name="submit_comment">Submit comment</string>
+    <string name="reply">Reply</string>
 </resources>

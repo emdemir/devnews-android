@@ -24,10 +24,12 @@ class AppContainer(application: DevNews) {
     // Services
     private val authService = retrofit.create(AuthService::class.java)
     private val indexService = retrofit.create(IndexService::class.java)
+    private val storyService = retrofit.create(StoryService::class.java)
 
     // Repositories
     val authRepository = AuthRepository(authService)
     val indexRepository = IndexRepository(indexService)
+    val storyRepository = StoryRepository(storyService)
 
     // ViewModel factories
     val loginViewModelFactory = ViewModelFactory<LoginViewModel> {
@@ -38,5 +40,8 @@ class AppContainer(application: DevNews) {
     }
     val homeViewModelFactory = ViewModelFactory<HomeViewModel> {
         HomeViewModel(indexRepository)
+    }
+    val storyViewModelFactory = ViewModelFactory<StoryViewModel> {
+        StoryViewModel(storyRepository)
     }
 }

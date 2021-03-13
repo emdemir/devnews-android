@@ -66,6 +66,9 @@ dependencies {
     // Parsing JWTs (for determining expiration)
     implementation 'com.auth0.android:jwtdecode:2.0.0'
 
+    // Opening URLs in a custom tab
+    implementation "androidx.browser:browser:1.3.0"
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
