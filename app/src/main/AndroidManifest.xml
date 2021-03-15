@@ -45,6 +45,10 @@
             android:label="@string/title_activity_story"
             android:theme="@style/Theme.DevNews.NoActionBar" />
 
+        <activity android:name=".tag.TagActivity"
+            android:label="@string/title_activity_tag"
+            android:theme="@style/Theme.DevNews.NoActionBar" />
+
         <service android:name=".account.AccountService"
             android:exported="false">
             <intent-filter>

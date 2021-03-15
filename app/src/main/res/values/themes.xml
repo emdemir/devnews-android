@@ -20,4 +20,10 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+    <style name="ThemeOverlay.DevNews.CommentBox" parent="MaterialAlertDialog.MaterialComponents">
+        <item name="android:windowIsFloating">true</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:dialogCornerRadius" tools:targetApi="p">0dp</item>
+    </style>
 </resources>

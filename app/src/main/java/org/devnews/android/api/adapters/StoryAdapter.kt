@@ -1,11 +1,9 @@
 package org.devnews.android.api.adapters
 
-import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-import android.net.Uri
-import android.text.TextUtils
 import android.text.format.DateUtils
 import android.text.format.DateUtils.MINUTE_IN_MILLIS
+import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -13,18 +11,31 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.ContextCompat
+import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import org.devnews.android.R
 import org.devnews.android.api.objects.Story
-import org.devnews.android.story.StoryActivity
+import org.devnews.android.utils.dpToPx
+import java.lang.IllegalStateException
 
 
 class StoryAdapter(
     private var stories: List<Story>
 ) : RecyclerView.Adapter<StoryAdapter.ViewHolder>() {
+
+    enum class StoryType { URL, TEXT }
+
+    private var onUpvoteClickListener: ((String) -> Unit)? = null
+    private var onCommentsClickListener: ((String) -> Unit)? = null
+    private var onDetailsClickListener: ((String, StoryType) -> Unit)? = null
+    private var onTagClickListener: ((String) -> Unit)? = null
+
+    init {
+        setHasStableIds(true)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -35,6 +46,10 @@ class StoryAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val story = stories[position]
         holder.bindData(story)
+        onUpvoteClickListener?.let { holder.setUpvoteClickListener(it) }
+        onCommentsClickListener?.let { holder.setCommentsClickListener(it) }
+        onDetailsClickListener?.let { holder.setDetailsClickListener(it) }
+        onTagClickListener?.let { holder.setTagClickListener(it) }
     }
 
     override fun getItemCount() = stories.size
@@ -42,6 +57,26 @@ class StoryAdapter(
     fun submitList(stories: List<Story>) {
         this.stories = stories
         notifyDataSetChanged()
+    }
+
+    override fun getItemId(position: Int): Long {
+        return stories[position].hashCode().toLong()
+    }
+
+    fun setUpvoteClickListener(listener: (String) -> Unit) {
+        onUpvoteClickListener = listener
+    }
+
+    fun setCommentsClickListener(listener: (String) -> Unit) {
+        onCommentsClickListener = listener
+    }
+
+    fun setDetailsClickListener(listener: (String, StoryType) -> Unit) {
+        onDetailsClickListener = listener
+    }
+
+    fun setTagClickListener(listener: (String) -> Unit) {
+        onTagClickListener = listener
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -55,27 +90,35 @@ class StoryAdapter(
         private val storyDetails: LinearLayout = itemView.findViewById(R.id.story_details)
         var url: String? = ""
         var shortURL: String? = null
-        var enableStoryListener = true
+
+        private var onUpvoteClickListener: ((String) -> Unit)? = null
+        private var onCommentsClickListener: ((String) -> Unit)? = null
+        private var onDetailsClickListener: ((String, StoryType) -> Unit)? = null
+        private var onTagClickListener: ((String) -> Unit)? = null
 
         init {
             storyDetails.setOnClickListener {
-                if (!TextUtils.isEmpty(url)) {
-                    val context = itemView.context
+                val url = url
+                val shortURL =
+                    shortURL ?: throw IllegalStateException("ShortURL is null for story item?!")
 
-                    val customTab = CustomTabsIntent.Builder().build()
-                    customTab.intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
-                    customTab.launchUrl(context, Uri.parse(url))
+                if (url == null) {
+                    onDetailsClickListener?.invoke(shortURL, StoryType.TEXT)
+                } else {
+                    onDetailsClickListener?.invoke(url, StoryType.URL)
                 }
             }
 
-            // If the user clicks the comment count, send the user to the story
             commentCount.setOnClickListener {
-                if (!enableStoryListener) return@setOnClickListener
-                val url = shortURL ?: return@setOnClickListener
+                shortURL?.let {
+                    onCommentsClickListener?.invoke(it)
+                }
+            }
 
-                val goToStory = Intent(itemView.context, StoryActivity::class.java)
-                goToStory.putExtra(StoryActivity.KEY_SHORT_URL, url)
-                itemView.context.startActivity(goToStory)
+            score.setOnClickListener {
+                shortURL?.let {
+                    onUpvoteClickListener?.invoke(it)
+                }
             }
         }
 
@@ -83,17 +126,28 @@ class StoryAdapter(
          * Bind the story to the current view.
          *
          * @param story The story that's being bound.
-         * @param enableStoryListener If true, then clicking the comment count will launch story
-         * details. Otherwise nothing will happen.
          */
-        fun bindData(story: Story, enableStoryListener: Boolean = true) {
+        fun bindData(story: Story) {
             shortURL = story.shortURL
             url = story.url
-            this.enableStoryListener = enableStoryListener
 
             score.text = story.score.toString()
             commentCount.text = story.commentCount.toString()
             title.text = story.title
+
+            // If the story was upvoted by us then show it as orange.
+            val textColor = TypedValue()
+            itemView.context.theme.resolveAttribute(R.attr.colorOnBackground, textColor, true)
+            if (story.userVoted == true) {
+                score.setTextColor(itemView.context.getColor(R.color.upvoteYellow))
+                TextViewCompat.setCompoundDrawableTintList(
+                    score,
+                    ContextCompat.getColorStateList(itemView.context, R.color.upvoteYellow)
+                )
+            } else {
+                score.setTextColor(textColor.data)
+                TextViewCompat.setCompoundDrawableTintList(score, null)
+            }
 
             if (story.domain != null) {
                 domain.visibility = VISIBLE
@@ -115,15 +169,39 @@ class StoryAdapter(
             story.tags?.let {
                 for (tag in it) {
                     val chip = Chip(itemView.context)
+                    chip.tag = tag
                     chip.text = tag
                     chip.ensureAccessibleTouchTarget(0)
                     chip.shapeAppearanceModel = chip.shapeAppearanceModel.withCornerSize(
-                        // Calculate 6dp
-                        6.0F * itemView.context.resources.displayMetrics.density
+                        dpToPx(itemView.context, 6f)
                     )
                     tagGroup.addView(chip)
+
+                    chip.setOnClickListener {
+                        onTagClickListener?.invoke(chip.tag as String)
+                    }
                 }
             }
         }
+
+        fun setUpvoteClickListener(listener: (String) -> Unit) {
+            onUpvoteClickListener = listener
+        }
+
+        fun setCommentsClickListener(listener: (String) -> Unit) {
+            onCommentsClickListener = listener
+        }
+
+        fun setDetailsClickListener(listener: (String, StoryType) -> Unit) {
+            onDetailsClickListener = listener
+        }
+
+        fun setTagClickListener(listener: (String) -> Unit) {
+            onTagClickListener = listener
+        }
+    }
+
+    companion object {
+        private const val TAG = "StoryAdapter"
     }
 }

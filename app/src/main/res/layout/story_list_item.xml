@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/story_list_item">
+    android:id="@+id/story_list_item"
+    tools:showIn="@layout/fragment_home">
 
     <TextView
         android:id="@+id/score_text"
@@ -56,6 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/title_text"
+                app:singleSelection="true"
                 app:chipSpacingHorizontal="4dp"
                 app:chipSpacingVertical="4dp">
             </com.google.android.material.chip.ChipGroup>

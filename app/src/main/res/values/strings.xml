@@ -45,7 +45,14 @@
     <string name="refresh_button">Refresh</string>
     <string name="error_story_not_found">The story was not found. It may have been deleted by the submitter or by moderators.</string>
     <string name="title_activity_story">Story</string>
-    <string name="write_a_new_comment">Write a new comment...</string>
+    <string name="write_a_new_comment">Write a new comment…</string>
     <string name="submit_comment">Submit comment</string>
     <string name="reply">Reply</string>
+    <string name="error_parent_comment_not_found">The parent comment couldn\'t be found. It\'s possible that the comment was deleted by the creator or by moderators, or the story may be deleted.</string>
+    <string name="error_comment_not_found">The comment doesn\'t exist. It may have been deleted by its author or by moderators.</string>
+    <string name="menu_refresh">Refresh</string>
+    <string name="stories_with_tag">Stories with tag</string>
+    <string name="error_tag_not_found">Couldn\'t find that tag. Please double-check if it exists.</string>
+    <string name="title_activity_tag">Tag</string>
+    <string name="try_again">Try Again</string>
 </resources>

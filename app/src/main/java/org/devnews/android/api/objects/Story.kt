@@ -14,9 +14,9 @@ data class Story(
     val text: String?,
     @SerializedName("submitted_at") val submittedAt: Date,
     @SerializedName("submitter_username") val submitterUsername: String?,
-    val score: Int,
-    @SerializedName("comment_count") val commentCount: Int,
-    @SerializedName("user_voted") val userVoted: Boolean?,
+    var score: Int,
+    @SerializedName("comment_count") var commentCount: Int,
+    @SerializedName("user_voted") var userVoted: Boolean?,
 
     val tags: List<String>?,
     val comments: List<Comment>?

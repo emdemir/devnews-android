@@ -17,4 +17,6 @@
     <color name="darkBackground">#21242b</color>
     <color name="darkChipBackground">#282c34</color>
     <color name="darkText">#ffffff</color>
+
+    <color name="upvoteYellow">#FF9100</color>
 </resources>

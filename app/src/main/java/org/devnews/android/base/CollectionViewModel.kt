@@ -1,0 +1,65 @@
+package org.devnews.android.base
+
+import android.media.VolumeShaper
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.recyclerview.widget.RecyclerView
+import java.lang.IllegalStateException
+
+/**
+ * A view model that contains a collection of items, and also LiveData properties for start and end
+ * range modifications. It also provides a helper function to notify a RecyclerView adapter about
+ * added/updated/removed data.
+ */
+open class CollectionViewModel<T> : ViewModel() {
+    enum class OperationType { ADDED, UPDATED, REMOVED }
+
+    protected val _items = MutableLiveData<List<T>>(ArrayList())
+    protected val _updateStart = MutableLiveData<Int?>()
+    protected val _updateCount = MutableLiveData<Int?>()
+    protected val _operation = MutableLiveData<OperationType?>()
+
+    val items: LiveData<List<T>> = _items
+    val operation: LiveData<OperationType?> = _operation
+
+    /**
+     * Send the correct notification to the adapter in order to update the view's contents correctly.
+     *
+     * @param adapter The adapter object
+     */
+    fun <VH : RecyclerView.ViewHolder?> notifyAdapter(adapter: RecyclerView.Adapter<VH>) {
+        val updateStart = _updateStart.value
+            ?: throw IllegalStateException("updateStart must have a value before calling notifyAdapter")
+        val updateCount = _updateCount.value
+            ?: throw IllegalStateException("updateCount must have a value before calling notifyAdapter")
+        val operation = _operation.value
+            ?: throw IllegalStateException("updateCount must have a value before calling notifyAdapter")
+
+        if (updateCount < 1)
+            return
+
+        when (operation) {
+            OperationType.ADDED -> {
+                if (updateCount > 1) {
+                    adapter.notifyItemRangeInserted(updateStart, updateCount)
+                } else {
+                    adapter.notifyItemInserted(updateStart)
+                }
+            }
+            OperationType.UPDATED -> {
+                if (updateCount > 1) {
+                    adapter.notifyItemRangeChanged(updateStart, updateCount)
+                } else {
+                    adapter.notifyItemChanged(updateStart)
+                }
+            }
+            OperationType.REMOVED -> {
+                if (updateCount > 1) {
+                    adapter.notifyItemRangeRemoved(updateStart, updateCount)
+                } else {
+                    adapter.notifyItemRemoved(updateStart)
+                }
+            }
+        }
+    }
+}

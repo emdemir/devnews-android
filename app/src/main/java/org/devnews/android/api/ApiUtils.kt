@@ -1,17 +1,16 @@
 package org.devnews.android.api
 
-import android.accounts.Account
 import android.accounts.AccountManager
-import android.app.Application
+import android.content.Context
 import android.util.Log
-import android.widget.Toast
+import androidx.annotation.CheckResult
 import com.auth0.android.jwt.JWT
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import org.devnews.android.DevNews
-import org.devnews.android.account.DevNewsAuthenticator.Companion.AUTHTOKEN_TYPE
+import org.devnews.android.R
 import org.devnews.android.account.getAccountDetails
+import retrofit2.HttpException
 import retrofit2.Response
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
@@ -108,5 +107,54 @@ class TokenInterceptor(private val application: DevNews) : Interceptor {
         // so no need to check for 401. (watch this bite me in the bum in a week)
         return chain.proceed(newReq)
     }
-
 }
+
+/**
+ * Wrap the call with a try/catch, and handle the common scenarios. The return value should be
+ * assigned to an Observable error value.
+ *
+ * @param context Android context used to resolve strings.
+ * @param httpCodeHandler If a HTTP error code other than 400 is received and this lambda is passed,
+ * it will be run. If it returns a string, that string is used as the error value. Otherwise a generic
+ * unknown error is generated.
+ * @param fn The lambda to be run.
+ * @return a string if there was an error, null otherwise.
+ */
+@CheckResult
+suspend fun wrapAPIError(
+    context: Context,
+    httpCodeHandler: ((Int) -> String?)? = null,
+    fn: suspend () -> Unit
+): String? {
+    try {
+        fn()
+    } catch (e: HttpException) {
+        Log.d(TAG, "API operation received a HTTP exception.")
+
+        when (e.code()) {
+            400 -> {
+                Log.d(TAG, "Bad request, apparently.")
+                return getError(e.response()!!)
+            }
+            else -> {
+                // Try the error code handler
+                val err = httpCodeHandler?.invoke(e.code())
+
+                return if (err == null) {
+                    Log.d(TAG, "HTTP code handler doesn't exist or didn't handle it, returning generic error.")
+                    context.getString(R.string.error_unknown)
+                } else {
+                    Log.d(TAG, "HTTP error code handler returned a string, passing it through.")
+                    err
+                }
+            }
+        }
+    } catch (e: Exception) {
+        Log.e(TAG, "Exception raised while running the API call!", e)
+        return context.getString(R.string.error_unknown)
+    }
+
+    return null
+}
+
+private const val TAG = "ApiUtils"

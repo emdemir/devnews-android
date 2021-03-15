@@ -1,7 +1,8 @@
 package org.devnews.android.api.objects
 
 import com.google.gson.annotations.SerializedName
-import java.util.Date
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * A comment made on a story.
@@ -12,25 +13,70 @@ data class Comment(
     val comment: String,
     @SerializedName("comment_html") val commentHtml: String,
     val username: String?,
-    val score: String?,
-    @SerializedName("user_voted") val userVoted: Boolean?,
+    var score: Int?,
+    @SerializedName("user_voted") var userVoted: Boolean?,
     val read: Boolean?,
 
-    val children: List<Comment>?,
+    var children: ArrayList<Comment>?,
 
     // Used for displaying comments
-    val indent: Int = 0
+    var indent: Int = 0
 ) {
-    /**
-     * Return a flat list of comment where each nested level assigns the correct indent level to
-     * the comment.
-     */
-    fun generateCommentList(indent: Int = 0): List<Comment> {
-        val comments = arrayListOf(this)
-        children?.forEach { child ->
-            child.generateCommentList(indent + 1).forEach { comments.add(it) }
+
+    private data class CommentListIterator(val list: List<Comment>, var index: Int = 0)
+
+    companion object {
+        /**
+         * Return a flat list of comment where each nested level assigns the correct indent level to
+         * the comment.
+         */
+        fun generateCommentList(comments: List<Comment>): List<Comment> {
+            // This is an iterative tree flattening operation.
+            var currentIterator = CommentListIterator(comments)
+            val stack = Stack<CommentListIterator>()
+            val list = ArrayList<Comment>()
+
+            stack.push(currentIterator)
+
+            do {
+                while (currentIterator.index < currentIterator.list.size) {
+                    val comment = currentIterator.list[currentIterator.index]
+                    comment.indent = stack.size - 1
+                    list.add(comment)
+                    currentIterator.index++
+
+                    val children = comment.children
+                    if (children != null && children.size > 0) {
+                        stack.push(currentIterator)
+                        currentIterator = CommentListIterator(children, 0)
+                    }
+                }
+
+                currentIterator = stack.pop()
+            } while (stack.size > 0)
+
+            return list
         }
 
-        return comments
+        /**
+         * Searches for a comment matching the given predicate recursively.
+         *
+         * @param comments A list of comments to search.
+         * @param predicate A lambda returning true when the comment matches.
+         * @return The comment if it was found, null if it wasn't.
+         */
+        fun findComment(comments: List<Comment>, predicate: (Comment) -> Boolean): Comment? {
+            comments.forEach { comment ->
+                if (predicate(comment))
+                    return comment
+
+                val children = comment.children
+                if (children != null) {
+                    findComment(children, predicate)?.let { return it }
+                }
+            }
+
+            return null
+        }
     }
 }
