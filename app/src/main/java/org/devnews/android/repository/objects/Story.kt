@@ -17,6 +17,7 @@ data class Story(
     val title: String,
     val url: String?,
     val text: String?,
+    @SerializedName("text_html") val textHtml: String?,
     @SerializedName("submitted_at") val submittedAt: Date,
     @SerializedName("submitter_username") val submitterUsername: String?,
     var score: Int,

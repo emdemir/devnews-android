@@ -2,7 +2,11 @@ package org.devnews.android.ui.story
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.text.Html
+import android.text.SpannableString
+import android.text.TextUtils
 import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
@@ -10,6 +14,7 @@ import android.view.View.VISIBLE
 import android.view.View.NOT_FOCUSABLE
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -71,7 +76,24 @@ class StoryActivity : Activity(), CreateCommentDialogFragment.CreateCommentDialo
         viewModel.story.observe(this) {
             if (it == null) return@observe
             viewHolder.bindData(it)
+
+            // If the story has text, format the text to a Spannable and display it.
+            if (TextUtils.isEmpty(it.textHtml)) {
+                binding.storyContents.visibility = GONE
+            } else {
+                val html = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    Html.fromHtml(it.textHtml, Html.FROM_HTML_MODE_COMPACT)
+                } else {
+                    // We're already handling the deprecation case with the SDK version check.
+                    @Suppress("DEPRECATION")
+                    Html.fromHtml(it.textHtml)
+                }
+                val spannableHtml = SpannableString(html).trim()
+                binding.storyContents.setText(spannableHtml, TextView.BufferType.SPANNABLE)
+                binding.storyContents.visibility = VISIBLE
+            }
         }
+
         viewHolder.setDetailsClickListener { _, storyType ->
             if (storyType == StoryAdapter.StoryType.URL) {
                 viewModel.story.value!!.openCustomTab(this)
@@ -86,7 +108,7 @@ class StoryActivity : Activity(), CreateCommentDialogFragment.CreateCommentDialo
         // Clicking the "new comment" box launches a dialog with the comment box.
         val newCommentText: EditText = findViewById(R.id.new_comment_text)
         val sendButton: ImageView = findViewById(R.id.send_button)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             newCommentText.focusable = NOT_FOCUSABLE
         }
         newCommentText.setOnClickListener { createCommentBox() }
