@@ -25,7 +25,7 @@
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
                 android:paddingBottom="64dp"
-                tools:listitem="@layout/story_list_item" />
+                tools:listitem="@layout/list_item_story" />
             
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

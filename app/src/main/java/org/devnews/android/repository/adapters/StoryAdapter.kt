@@ -38,7 +38,7 @@ class StoryAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.story_list_item, parent, false)
+            .inflate(R.layout.list_item_story, parent, false)
         return ViewHolder(view)
     }
 
