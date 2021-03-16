@@ -19,6 +19,7 @@ import org.devnews.android.repository.adapters.StoryAdapter
 import org.devnews.android.base.Activity
 import org.devnews.android.databinding.ActivityTagBinding
 import org.devnews.android.ui.story.StoryActivity.Companion.launchStoryDetails
+import org.devnews.android.utils.openCustomTab
 import java.lang.IllegalStateException
 
 class TagActivity : Activity() {
@@ -96,7 +97,7 @@ class TagActivity : Activity() {
         }
         adapter.setDetailsClickListener { url, storyType ->
             if (storyType == StoryAdapter.StoryType.URL) {
-                viewModel.items.value!!.find { it.shortURL == url }!!.openCustomTab(this)
+                openCustomTab(this, url)
             } else {
                 launchStoryDetails(this, url)
             }

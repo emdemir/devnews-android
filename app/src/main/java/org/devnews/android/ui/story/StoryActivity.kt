@@ -29,6 +29,7 @@ import org.devnews.android.base.Activity
 import org.devnews.android.databinding.ActivityStoryBinding
 import org.devnews.android.repository.adapters.StoryAdapter
 import org.devnews.android.ui.story.commenting.CreateCommentDialogFragment
+import org.devnews.android.utils.openCustomTab
 import java.lang.IllegalStateException
 
 class StoryActivity : Activity(), CreateCommentDialogFragment.CreateCommentDialogListener {
@@ -93,9 +94,9 @@ class StoryActivity : Activity(), CreateCommentDialogFragment.CreateCommentDialo
             }
         }
 
-        viewHolder.setDetailsClickListener { _, storyType ->
+        viewHolder.setDetailsClickListener { url, storyType ->
             if (storyType == StoryAdapter.StoryType.URL) {
-                viewModel.story.value!!.openCustomTab(this)
+                openCustomTab(this, url)
             }
         }
         viewHolder.setUpvoteClickListener {

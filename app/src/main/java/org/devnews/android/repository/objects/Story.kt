@@ -38,20 +38,6 @@ data class Story(
         }
 
     /**
-     * Open a browser page for this story using the Custom Tabs API.
-     *
-     * @param context Android context
-     */
-    fun openCustomTab(context: Context) {
-        if (url == null)
-            throw IllegalStateException("You're trying to open custom tab with a text story!")
-
-        val customTab = CustomTabsIntent.Builder().build()
-        customTab.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        customTab.launchUrl(context, Uri.parse(url))
-    }
-
-    /**
      * Toggle the user's vote on this story, and update the score.
      */
     fun toggleVote() {
@@ -60,5 +46,4 @@ data class Story(
         score += if (voted) -1 else 1
         userVoted = !voted
     }
-
 }
