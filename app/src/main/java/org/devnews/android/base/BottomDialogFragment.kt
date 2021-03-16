@@ -38,7 +38,7 @@ abstract class BottomDialogFragment : DialogFragment() {
         val view = createView(parent, savedInstanceState)
         val builder = MaterialAlertDialogBuilder(
             requireContext(),
-            R.style.ThemeOverlay_DevNews_CommentBox
+            R.style.ThemeOverlay_DevNews_BottomDialog
         )
         builder.setView(view)
 
