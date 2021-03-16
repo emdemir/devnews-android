@@ -20,7 +20,7 @@ import org.devnews.android.R
 import org.devnews.android.repository.objects.Comment
 import org.devnews.android.utils.dpToPx
 
-class CommentAdapter(private var comments: List<Comment>) :
+class CommentAdapter(private val comments: List<Comment>) :
     RecyclerView.Adapter<CommentAdapter.ViewHolder>() {
 
     private var onReplyListener: ((shortURL: String) -> Unit)? = null
@@ -44,11 +44,6 @@ class CommentAdapter(private var comments: List<Comment>) :
     }
 
     override fun getItemCount() = comments.size
-
-    fun submitList(comments: List<Comment>) {
-        this.comments = comments
-        notifyDataSetChanged()
-    }
 
     override fun getItemId(position: Int): Long {
         return comments[position].shortURL.hashCode().toLong()

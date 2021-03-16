@@ -22,7 +22,7 @@ import java.lang.IllegalStateException
 
 
 class StoryAdapter(
-    private var stories: List<Story>
+    private val stories: List<Story>
 ) : RecyclerView.Adapter<StoryAdapter.ViewHolder>() {
 
     enum class StoryType { URL, TEXT }
@@ -52,11 +52,6 @@ class StoryAdapter(
     }
 
     override fun getItemCount() = stories.size
-
-    fun submitList(stories: List<Story>) {
-        this.stories = stories
-        notifyDataSetChanged()
-    }
 
     override fun getItemId(position: Int): Long {
         return stories[position].hashCode().toLong()
