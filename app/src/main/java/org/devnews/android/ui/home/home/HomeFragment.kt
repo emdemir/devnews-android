@@ -8,6 +8,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,12 +20,13 @@ import org.devnews.android.databinding.FragmentHomeBinding
 import org.devnews.android.repository.adapters.StoryAdapter
 import org.devnews.android.ui.story.StoryActivity.Companion.launchStoryDetails
 import org.devnews.android.ui.tag.TagActivity.Companion.launchTagActivity
+import org.devnews.android.utils.openCustomTab
 
 class HomeFragment : Fragment() {
 
-    private val viewModel: HomeViewModel by activityViewModels(factoryProducer = {
+    private val viewModel: HomeViewModel by viewModels {
         (requireActivity().application as DevNews).container.homeViewModelFactory
-    })
+    }
     private lateinit var binding: FragmentHomeBinding
 
     override fun onCreateView(
@@ -55,7 +57,7 @@ class HomeFragment : Fragment() {
         adapter.setDetailsClickListener { url, storyType ->
             val context = requireContext()
             if (storyType == StoryAdapter.StoryType.URL) {
-                viewModel.items.value!!.find { it.shortURL == url }!!.openCustomTab(context)
+                openCustomTab(context, url)
             } else {
                 launchStoryDetails(context, url)
             }
