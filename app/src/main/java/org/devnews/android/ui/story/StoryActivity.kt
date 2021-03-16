@@ -26,13 +26,14 @@ import org.devnews.android.DevNews
 import org.devnews.android.R
 import org.devnews.android.repository.adapters.CommentAdapter
 import org.devnews.android.base.Activity
+import org.devnews.android.base.BottomDialogFragment
 import org.devnews.android.databinding.ActivityStoryBinding
 import org.devnews.android.repository.adapters.StoryAdapter
 import org.devnews.android.ui.story.commenting.CreateCommentDialogFragment
 import org.devnews.android.utils.openCustomTab
 import java.lang.IllegalStateException
 
-class StoryActivity : Activity(), CreateCommentDialogFragment.CreateCommentDialogListener {
+class StoryActivity : Activity(), BottomDialogFragment.BottomDialogListener<String> {
     private val viewModel: StoryViewModel by viewModels(factoryProducer = {
         (application as DevNews).container.storyViewModelFactory
     })
@@ -183,8 +184,8 @@ class StoryActivity : Activity(), CreateCommentDialogFragment.CreateCommentDialo
     /**
      * Called when the dialog receives a "send comment" action.
      */
-    override fun onSendComment(message: String) {
-        viewModel.createComment(this, message)
+    override fun onSubmit(result: String) {
+        viewModel.createComment(this, result)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
