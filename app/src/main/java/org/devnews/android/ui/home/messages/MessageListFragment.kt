@@ -4,8 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.*
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,7 +17,7 @@ import org.devnews.android.repository.adapters.MessageAdapter
 import org.devnews.android.ui.message.thread.MessageThreadActivity.Companion.launchMessageThread
 
 class MessageListFragment : Fragment() {
-    private val viewModel: MessageListViewModel by viewModels {
+    private val viewModel: MessageListViewModel by activityViewModels {
         (requireActivity().application as DevNews).container.messageListViewModelFactory
     }
     private lateinit var binding: FragmentMessageListBinding
@@ -55,6 +54,20 @@ class MessageListFragment : Fragment() {
             viewModel.notifyAdapter(adapter)
         }
 
+        // --- Compose Message Setup ---
+
+        // When the compose FAB is clicked, show the compose dialog.
+        binding.createMessageFab.setOnClickListener {
+            createMessageDialog()
+        }
+        // When the message ID is set by the view model (a new message thread was created),
+        // launch that thread, possibly dismissing the dialog.
+        viewModel.messageID.observe(viewLifecycleOwner) {
+            if (it == null) return@observe
+
+            dismissDialogAndLaunchThread(it)
+        }
+
         // --- Swipe to Refresh Setup ---
 
         // When swipe to refresh is pulled down reload the message list.
@@ -83,12 +96,13 @@ class MessageListFragment : Fragment() {
 
         // If error message is reported to us, then show error with refresh button.
         viewModel.error.observe(viewLifecycleOwner) {
-            if (it != null) {
-                Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.try_again) {
-                        viewModel.loadMore(requireContext())
-                    }.show()
-            }
+            if (it == null) return@observe
+
+            // If the dialog is displayed in front of us then display the snackbar on the dialog.
+            val viewToShowIn = getDialogFragment()?.dialog?.window?.decorView ?: binding.root
+            Snackbar.make(viewToShowIn, it, Snackbar.LENGTH_LONG).show()
+
+            binding.swipeRefresh.isRefreshing = false
         }
 
         // Load stories when we are initially created
@@ -100,5 +114,40 @@ class MessageListFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    /**
+     * Creates a new "compose message" dialog.
+     */
+    private fun createMessageDialog() {
+        CreateMessageDialogFragment().show(
+            parentFragmentManager,
+            CreateMessageDialogFragment.TAG
+        )
+    }
+
+    /**
+     * Get the "compose message" dialog if it exists.
+     */
+    private fun getDialogFragment(): DialogFragment? {
+        val dialog = parentFragmentManager.findFragmentByTag(CreateMessageDialogFragment.TAG)
+
+        return if (dialog != null) {
+            (dialog as DialogFragment)
+        } else {
+            null
+        }
+    }
+
+    /**
+     * Dismiss the dialog, and launch MessageThreadActivity.
+     */
+    private fun dismissDialogAndLaunchThread(messageID: Int) {
+        getDialogFragment()?.dismiss()
+        launchMessageThread(requireContext(), messageID)
+    }
+
+    companion object {
+        private const val TAG = "MessageListFragment"
     }
 }

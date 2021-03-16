@@ -58,4 +58,10 @@
     <string name="title_activity_message_thread">Message Thread</string>
     <string name="fragment_message_list">Messages</string>
     <string name="menu_message_list">Messages</string>
+    <string name="field_recipient">Recipient</string>
+    <string name="field_content">Enter your message…</string>
+    <string name="create_message_fab">Compose New Message</string>
+    <string name="validate_recipient_empty">Recipient name cannot be empty.</string>
+    <string name="validate_content_empty">Message content cannot be empty.</string>
+    <string name="error_recipient_not_found">That recipient wasn\'t found. Make sure you spelled the username correctly.</string>
 </resources>
