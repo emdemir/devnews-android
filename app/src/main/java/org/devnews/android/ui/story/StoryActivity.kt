@@ -28,7 +28,6 @@ import org.devnews.android.repository.adapters.CommentAdapter
 import org.devnews.android.base.Activity
 import org.devnews.android.databinding.ActivityStoryBinding
 import org.devnews.android.repository.adapters.StoryAdapter
-import org.devnews.android.repository.objects.Comment
 import org.devnews.android.ui.story.commenting.CreateCommentDialogFragment
 import java.lang.IllegalStateException
 
@@ -42,7 +41,7 @@ class StoryActivity : Activity(), CreateCommentDialogFragment.CreateCommentDialo
         super.onCreate(savedInstanceState)
 
         // Get the story key
-        val shortURL = intent.getStringExtra(KEY_SHORT_URL)
+        val shortURL = intent.getStringExtra(ARG_SHORT_URL)
             ?: throw IllegalStateException("Short URL was not sent to story activity!")
 
         // --- View Setup ---
@@ -197,7 +196,7 @@ class StoryActivity : Activity(), CreateCommentDialogFragment.CreateCommentDialo
     }
 
     companion object {
-        const val KEY_SHORT_URL = "SHORT_URL"
+        const val ARG_SHORT_URL = "SHORT_URL"
 
         /**
          * Launch story details for a given story short URL.
@@ -207,7 +206,7 @@ class StoryActivity : Activity(), CreateCommentDialogFragment.CreateCommentDialo
          */
         fun launchStoryDetails(context: Context, shortURL: String) {
             val intent = Intent(context, StoryActivity::class.java)
-            intent.putExtra(KEY_SHORT_URL, shortURL)
+            intent.putExtra(ARG_SHORT_URL, shortURL)
             context.startActivity(intent)
         }
     }
