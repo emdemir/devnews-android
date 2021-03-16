@@ -19,9 +19,8 @@ import java.lang.IllegalStateException
  * Dialog fragment that sets itself to sit at the bottom, right above the keyboard. This is useful
  * for showing forms that don't require a completely new activity.
  */
-abstract class BottomDialogFragment<T> : DialogFragment() {
+abstract class BottomDialogFragment : DialogFragment() {
     private var parent: ViewGroup? = null
-    protected lateinit var listener: BottomDialogListener<T>
 
     /**
      * Return the view the AlertDialog should contain.
@@ -75,20 +74,5 @@ abstract class BottomDialogFragment<T> : DialogFragment() {
         // Make sure we store a reference to the container so we can use it to inflate later.
         parent = container
         return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        // Make sure our host fragment/activity is listening.
-        try {
-            listener = context as BottomDialogListener<T>
-        } catch (e: ClassCastException) {
-            throw ClassCastException("$context must implement BottomDialogFragmentListener!")
-        }
-    }
-
-    interface BottomDialogListener<T> {
-        fun onSubmit(result: T)
     }
 }
