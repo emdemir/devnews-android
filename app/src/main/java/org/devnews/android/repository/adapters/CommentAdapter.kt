@@ -133,9 +133,9 @@ class CommentAdapter(private val comments: List<Comment>) :
             // Set indent indicator
             val params = indentIndicator.layoutParams as ViewGroup.MarginLayoutParams
             params.width =
-                if (comment.indent > 0) dpToPx(itemView.context, 4f).toInt() else 0
+                if (comment.indent > 0) dpToPx(itemView.context, 4f) else 0
             params.marginStart =
-                ((comment.indent - 1) * dpToPx(itemView.context, 4f)).toInt()
+                ((comment.indent - 1) * dpToPx(itemView.context, 4f))
             indentIndicator.layoutParams = params
         }
 

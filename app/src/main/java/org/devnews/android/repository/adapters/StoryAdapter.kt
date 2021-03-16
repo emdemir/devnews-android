@@ -167,7 +167,7 @@ class StoryAdapter(
                     chip.text = tag
                     chip.ensureAccessibleTouchTarget(0)
                     chip.shapeAppearanceModel = chip.shapeAppearanceModel.withCornerSize(
-                        dpToPx(itemView.context, 6f)
+                        dpToPx(itemView.context, 6f).toFloat()
                     )
                     tagGroup.addView(chip)
 
