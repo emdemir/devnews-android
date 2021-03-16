@@ -36,11 +36,9 @@ abstract class PaginatedViewModel<T> : CollectionViewModel<T>() {
         _loading.value = false
         _error.value = null
 
-        // The following values are updated because we need to notify the Adapter about all the
-        // removed items, otherwise we'll get a crash when we add new items.
-        _updateStart.value = 0
-        _updateCount.value = size
-        _operation.value = OperationType.REMOVED
+        // We need to notify the Adapter about all the removed items, otherwise we'll get a crash
+        // when we add new items.
+        collectionChanged(0, size, OperationType.REMOVED)
     }
 
     /**
@@ -57,9 +55,7 @@ abstract class PaginatedViewModel<T> : CollectionViewModel<T>() {
             val newItems = fetchData(context, page) ?: return@launch
             newItems.forEach { items.add(it) }
 
-            _updateStart.value = prevSize
-            _updateCount.value = newItems.size
-            _operation.value = OperationType.ADDED
+            collectionChanged(prevSize, newItems.size, OperationType.ADDED)
             _page.value = page + 1
         }
     }

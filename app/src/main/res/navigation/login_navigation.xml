@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_welcome"
-        android:name="org.devnews.android.welcome.WelcomeFragment"
+        android:name="org.devnews.android.ui.welcome.WelcomeFragment"
         android:label="DevNews">
         <action
             android:id="@+id/action_welcome_to_login"
@@ -15,7 +15,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_login"
-        android:name="org.devnews.android.welcome.LoginFragment"
+        android:name="org.devnews.android.ui.welcome.LoginFragment"
         android:label="Login"
         tools:layout="@layout/fragment_login" />
 </navigation>

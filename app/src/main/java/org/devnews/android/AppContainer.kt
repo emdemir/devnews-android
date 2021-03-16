@@ -1,13 +1,13 @@
 package org.devnews.android
 
 import okhttp3.OkHttpClient
-import org.devnews.android.api.*
-import org.devnews.android.home.home.HomeViewModel
-import org.devnews.android.story.StoryViewModel
-import org.devnews.android.tag.TagViewModel
+import org.devnews.android.repository.*
+import org.devnews.android.ui.home.home.HomeViewModel
+import org.devnews.android.ui.story.StoryViewModel
+import org.devnews.android.ui.tag.TagViewModel
 import org.devnews.android.utils.ViewModelFactory
-import org.devnews.android.welcome.LoginViewModel
-import org.devnews.android.welcome.RegisterViewModel
+import org.devnews.android.ui.welcome.LoginViewModel
+import org.devnews.android.ui.welcome.RegisterViewModel
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -50,6 +50,6 @@ class AppContainer(application: DevNews) {
         StoryViewModel(storyRepository, commentRepository)
     }
     val tagViewModelFactory = ViewModelFactory<TagViewModel> {
-        TagViewModel(tagRepository)
+        TagViewModel(tagRepository, storyRepository)
     }
 }

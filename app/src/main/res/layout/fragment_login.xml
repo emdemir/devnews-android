@@ -7,13 +7,13 @@
         <import type="android.view.View" />
         <variable
             name="viewmodel"
-            type="org.devnews.android.welcome.LoginViewModel" />
+            type="org.devnews.android.ui.welcome.LoginViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".welcome.LoginFragment"
+        tools:context=".ui.welcome.LoginFragment"
         tools:showIn="@layout/content_welcome">
 
         <FrameLayout
@@ -33,7 +33,7 @@
                 android:layout_height="24dp"
                 android:layout_gravity="center"
                 android:indeterminate="true"
-                android:visibility='@{viewmodel.loggingIn ? View.VISIBLE : View.GONE}'/>
+                android:visibility='@{viewmodel.loading ? View.VISIBLE : View.GONE}'/>
         </FrameLayout>
 
         <LinearLayout
@@ -53,7 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:enabled="@{!viewmodel.loggingIn}"
+                android:enabled="@{!viewmodel.loading}"
                 app:helperText="Use your devnews.org username.">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -68,7 +68,7 @@
                 android:id="@+id/login_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:enabled="@{!viewmodel.loggingIn}"
+                android:enabled="@{!viewmodel.loading}"
                 app:passwordToggleEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -98,7 +98,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:enabled="@{!viewmodel.loggingIn}"
+                    android:enabled="@{!viewmodel.loading}"
                     android:text="@string/login_button" />
             </LinearLayout>
         </LinearLayout>

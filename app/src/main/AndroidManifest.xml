@@ -21,7 +21,7 @@
         android:networkSecurityConfig="@xml/network_security_config"
         tools:ignore="AllowBackup,UnusedAttribute">
         <activity
-            android:name=".welcome.WelcomeActivity"
+            android:name="org.devnews.android.ui.welcome.WelcomeActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.DevNews.NoActionBar">
             <intent-filter>
@@ -32,7 +32,7 @@
         </activity>
 
         <activity
-            android:name=".home.HomeActivity"
+            android:name="org.devnews.android.ui.home.HomeActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.DevNews.NoActionBar">
         </activity>
@@ -41,11 +41,11 @@
             android:label="@string/add_account_activity"
             android:theme="@style/Theme.DevNews.NoActionBar" />
 
-        <activity android:name=".story.StoryActivity"
+        <activity android:name="org.devnews.android.ui.story.StoryActivity"
             android:label="@string/title_activity_story"
             android:theme="@style/Theme.DevNews.NoActionBar" />
 
-        <activity android:name=".tag.TagActivity"
+        <activity android:name="org.devnews.android.ui.tag.TagActivity"
             android:label="@string/title_activity_tag"
             android:theme="@style/Theme.DevNews.NoActionBar" />
 

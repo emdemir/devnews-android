@@ -5,13 +5,12 @@ import android.accounts.AccountManager
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
 import org.devnews.android.DevNews
 import org.devnews.android.R
 import org.devnews.android.base.Activity
-import org.devnews.android.welcome.LoginViewModel
+import org.devnews.android.ui.welcome.LoginViewModel
 
 class AddAccountActivity : Activity() {
     // Subscribe to the login viewmodel to grab the credentials when the user finishes login

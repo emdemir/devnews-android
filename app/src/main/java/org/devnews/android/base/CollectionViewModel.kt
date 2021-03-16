@@ -15,12 +15,25 @@ open class CollectionViewModel<T> : ViewModel() {
     enum class OperationType { ADDED, UPDATED, REMOVED }
 
     protected val _items = MutableLiveData<List<T>>(ArrayList())
-    protected val _updateStart = MutableLiveData<Int?>()
-    protected val _updateCount = MutableLiveData<Int?>()
-    protected val _operation = MutableLiveData<OperationType?>()
+    private val _updateStart = MutableLiveData<Int?>()
+    private val _updateCount = MutableLiveData<Int?>()
+    private val _operation = MutableLiveData<OperationType?>()
 
     val items: LiveData<List<T>> = _items
     val operation: LiveData<OperationType?> = _operation
+
+    /**
+     * Set the parameters for a collection update notification.
+     *
+     * @param start The start index in the collection
+     * @param count The number of items that were changed
+     * @param operation The operation that took place
+     */
+    protected fun collectionChanged(start: Int, count: Int, operation: OperationType) {
+        _updateStart.value = start
+        _updateCount.value = count
+        _operation.value = operation
+    }
 
     /**
      * Send the correct notification to the adapter in order to update the view's contents correctly.
