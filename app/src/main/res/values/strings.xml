@@ -53,4 +53,9 @@
     <string name="error_tag_not_found">Couldn\'t find that tag. Please double-check if it exists.</string>
     <string name="title_activity_tag">Tag</string>
     <string name="try_again">Try Again</string>
+    <string name="sender_to_recipient">%1$s to %2$s</string>
+    <string name="error_message_thread_not_found">The message thread could not be found.</string>
+    <string name="title_activity_message_thread">Message Thread</string>
+    <string name="fragment_message_list">Messages</string>
+    <string name="menu_message_list">Messages</string>
 </resources>

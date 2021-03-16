@@ -10,5 +10,10 @@
         android:name="org.devnews.android.ui.home.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/nav_message_list"
+        android:name="org.devnews.android.ui.home.messages.MessageListFragment"
+        android:label="@string/fragment_message_list"
+        tools:layout="@layout/fragment_message_list" />
 
 </navigation>

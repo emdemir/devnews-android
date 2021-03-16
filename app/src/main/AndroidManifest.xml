@@ -49,6 +49,10 @@
             android:label="@string/title_activity_tag"
             android:theme="@style/Theme.DevNews.NoActionBar" />
 
+        <activity android:name="org.devnews.android.ui.message.thread.MessageThreadActivity"
+            android:label="@string/title_activity_message_thread"
+            android:theme="@style/Theme.DevNews.NoActionBar" />
+
         <service android:name=".account.AccountService"
             android:exported="false">
             <intent-filter>

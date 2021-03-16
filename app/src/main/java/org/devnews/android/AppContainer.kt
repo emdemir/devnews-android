@@ -3,6 +3,8 @@ package org.devnews.android
 import okhttp3.OkHttpClient
 import org.devnews.android.repository.*
 import org.devnews.android.ui.home.home.HomeViewModel
+import org.devnews.android.ui.home.messages.MessageListViewModel
+import org.devnews.android.ui.message.thread.MessageThreadViewModel
 import org.devnews.android.ui.story.StoryViewModel
 import org.devnews.android.ui.tag.TagViewModel
 import org.devnews.android.utils.ViewModelFactory
@@ -13,6 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 @Suppress("UNCHECKED_CAST")
 class AppContainer(application: DevNews) {
+
     // Main retrofit instance
     private val retrofit = Retrofit.Builder()
         .baseUrl("http://192.168.0.4:8081")
@@ -28,6 +31,7 @@ class AppContainer(application: DevNews) {
     private val storyService = retrofit.create(StoryService::class.java)
     private val commentService = retrofit.create(CommentService::class.java)
     private val tagService = retrofit.create(TagService::class.java)
+    private val messageService = retrofit.create(MessageService::class.java)
 
     // Repositories
     val authRepository = AuthRepository(authService)
@@ -35,6 +39,7 @@ class AppContainer(application: DevNews) {
     private val storyRepository = StoryRepository(storyService)
     private val commentRepository = CommentRepository(commentService)
     private val tagRepository = TagRepository(tagService)
+    private val messageRepository = MessageRepository(messageService)
 
     // ViewModel factories
     val loginViewModelFactory = ViewModelFactory<LoginViewModel> {
@@ -51,5 +56,11 @@ class AppContainer(application: DevNews) {
     }
     val tagViewModelFactory = ViewModelFactory<TagViewModel> {
         TagViewModel(tagRepository, storyRepository)
+    }
+    val messageThreadViewModelFactory = ViewModelFactory<MessageThreadViewModel> {
+        MessageThreadViewModel(messageRepository)
+    }
+    val messageListViewModelFactory = ViewModelFactory<MessageListViewModel> {
+        MessageListViewModel(messageRepository)
     }
 }
