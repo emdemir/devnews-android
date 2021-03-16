@@ -28,17 +28,9 @@ abstract class PaginatedViewModel<T> : CollectionViewModel<T>() {
     /**
      * Reset all Observables to initial status.
      */
-    protected fun resetState() {
-        val size = _items.value!!.size
-        // Clear all data and errors
+    override fun resetState() {
+        super.resetState()
         _page.value = 0
-        (_items.value!! as ArrayList<T>).clear()
-        _loading.value = false
-        _error.value = null
-
-        // We need to notify the Adapter about all the removed items, otherwise we'll get a crash
-        // when we add new items.
-        collectionChanged(0, size, OperationType.REMOVED)
     }
 
     /**
