@@ -26,15 +26,16 @@ abstract class BottomDialogFragment : DialogFragment() {
      * Return the view the AlertDialog should contain.
      *
      * @param container The container ViewGroup
+     * @param savedInstanceState The saved instance state.
      */
-    abstract fun createView(container: ViewGroup?): View
+    abstract fun createView(container: ViewGroup?, savedInstanceState: Bundle?): View
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         if (activity == null)
             throw IllegalStateException("Activity must not be null while creating the dialog!")
 
         // Instantiate the AlertDialog.
-        val view = createView(parent)
+        val view = createView(parent, savedInstanceState)
         val builder = MaterialAlertDialogBuilder(
             requireContext(),
             R.style.ThemeOverlay_DevNews_CommentBox
