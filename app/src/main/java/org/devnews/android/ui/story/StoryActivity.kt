@@ -30,10 +30,12 @@ import org.devnews.android.base.BottomDialogFragment
 import org.devnews.android.databinding.ActivityStoryBinding
 import org.devnews.android.repository.adapters.StoryAdapter
 import org.devnews.android.ui.story.commenting.CreateCommentDialogFragment
+import org.devnews.android.ui.story.commenting.CreateCommentDialogFragment.Companion.CREATE_COMMENT_REQUEST
+import org.devnews.android.ui.story.commenting.CreateCommentDialogFragment.Companion.KEY_COMMENT
 import org.devnews.android.utils.openCustomTab
 import java.lang.IllegalStateException
 
-class StoryActivity : Activity(), BottomDialogFragment.BottomDialogListener<String> {
+class StoryActivity : Activity() {
     private val viewModel: StoryViewModel by viewModels(factoryProducer = {
         (application as DevNews).container.storyViewModelFactory
     })
@@ -128,6 +130,14 @@ class StoryActivity : Activity(), BottomDialogFragment.BottomDialogListener<Stri
         adapter.setOnReplyListener {
             createCommentBox(parent = it)
         }
+        // When the comment box sends a reply to our request for comments, submit the comment.
+        supportFragmentManager.setFragmentResultListener(
+            CREATE_COMMENT_REQUEST,
+            this
+        ) { _, bundle ->
+            val comment = bundle.getString(KEY_COMMENT)!!
+            viewModel.createComment(this, comment)
+        }
         // When the upvote button is pressed, vote on the comment.
         adapter.setOnUpvoteListener {
             viewModel.voteOnComment(this, it)
@@ -179,13 +189,6 @@ class StoryActivity : Activity(), BottomDialogFragment.BottomDialogListener<Stri
             supportFragmentManager,
             CreateCommentDialogFragment.TAG
         )
-    }
-
-    /**
-     * Called when the dialog receives a "send comment" action.
-     */
-    override fun onSubmit(result: String) {
-        viewModel.createComment(this, result)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
