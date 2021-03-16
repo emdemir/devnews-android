@@ -51,6 +51,8 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0'
+    // getBindingAdapter() is currently not stable, and is required in MessageAdapter.
+    implementation 'androidx.recyclerview:recyclerview:1.2.0-beta02'
 
     // Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"

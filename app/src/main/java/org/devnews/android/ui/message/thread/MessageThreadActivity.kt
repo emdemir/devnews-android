@@ -18,6 +18,7 @@ import com.google.android.material.snackbar.Snackbar
 import org.devnews.android.DevNews
 import org.devnews.android.R
 import org.devnews.android.base.Activity
+import org.devnews.android.base.CollectionViewModel
 import org.devnews.android.databinding.ActivityMessageThreadBinding
 import org.devnews.android.databinding.ActivityStoryBinding
 import org.devnews.android.repository.adapters.CommentAdapter
@@ -51,7 +52,7 @@ class MessageThreadActivity : Activity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         // Setup recycler for the message thread
-        val adapter = MessageAdapter(viewModel.items.value!!, false)
+        val adapter = MessageAdapter(viewModel.items.value!!, true)
         binding.messageList.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         binding.messageList.adapter = adapter
         binding.messageList.addItemDecoration(
@@ -67,6 +68,19 @@ class MessageThreadActivity : Activity() {
         viewModel.operation.observe(this) {
             if (it == null) return@observe
             viewModel.notifyAdapter(adapter)
+
+            if (it == CollectionViewModel.OperationType.ADDED) {
+                // A new reply was added (or the view was refreshed, doesn't really matter), notify
+                // the adapter (and the reply box ViewHolder in turn) about it.
+                adapter.notifyReplyDone()
+            }
+        }
+
+        // --- Reply Setup ---
+
+        // When the user presses the send button on the reply box, reply to the thread.
+        adapter.setReplyListener {
+            viewModel.replyThread(this, it)
         }
 
         // --- Swipe Refresh Setup ---
@@ -83,8 +97,13 @@ class MessageThreadActivity : Activity() {
 
         // Show progress bar while loading.
         viewModel.loading.observe(this) {
-            binding.messageList.visibility = if (it) GONE else VISIBLE
-            binding.progress.visibility = if (it) VISIBLE else GONE
+            if (viewModel.items.value!!.isEmpty()) {
+                binding.messageList.visibility = if (it) GONE else VISIBLE
+                binding.progress.visibility = if (it) VISIBLE else GONE
+            } else {
+                binding.messageList.visibility = VISIBLE
+                binding.progress.visibility = GONE
+            }
 
             // Also set isRefreshing = false if loading stopped.
             if (!it) binding.swipeRefresh.isRefreshing = false

@@ -64,4 +64,8 @@
     <string name="validate_recipient_empty">Recipient name cannot be empty.</string>
     <string name="validate_content_empty">Message content cannot be empty.</string>
     <string name="error_recipient_not_found">That recipient wasn\'t found. Make sure you spelled the username correctly.</string>
+    <string name="send_message">Send messasge</string>
+    <string name="send_reply">Send reply</string>
+    <string name="field_content_reply">Enter your reply...</string>
+    <string name="error_message_thread_not_found_reply">Could not find the comment thread. The thread may be deleted, or the recipient\'s account might have been removed.</string>
 </resources>

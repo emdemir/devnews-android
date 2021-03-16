@@ -32,7 +32,7 @@ class MessageListFragment : Fragment() {
         // --- Message List Setup ---
 
         // Setup the recycler view and its adapter
-        val adapter = MessageAdapter(viewModel.items.value!!, true)
+        val adapter = MessageAdapter(viewModel.items.value!!, false)
         binding.messageList.adapter = adapter
         binding.messageList.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
