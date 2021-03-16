@@ -44,7 +44,7 @@ abstract class PaginatedViewModel<T> : CollectionViewModel<T>() {
         val prevSize = items.size
 
         viewModelScope.launch {
-            val newItems = fetchData(context, page) ?: return@launch
+            val newItems = fetchData(context, page + 1) ?: return@launch
             newItems.forEach { items.add(it) }
 
             collectionChanged(prevSize, newItems.size, OperationType.ADDED)
