@@ -156,12 +156,14 @@ class MessageAdapter(private val messages: List<Message>, private val thread: Bo
 
             // If we are not in thread mode, then make the text larger and ellipsize it.
             if (!thread) {
-                content.setTextAppearance(R.style.TextAppearance_AppCompat_Large)
+                content.setTextAppearance(R.style.ThemeOverlay_DevNews_TextAppearance_Large)
                 content.ellipsize = TextUtils.TruncateAt.END
+                content.isSingleLine = true
                 content.setTextIsSelectable(false)
             } else {
-                content.setTextAppearance(R.style.TextAppearance_AppCompat_Medium)
+                content.setTextAppearance(R.style.ThemeOverlay_DevNews_TextAppearance_Medium)
                 content.ellipsize = null
+                content.isSingleLine = false
                 content.setTextIsSelectable(true)
             }
         }

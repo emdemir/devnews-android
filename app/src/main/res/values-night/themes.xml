@@ -48,4 +48,12 @@
     <style name="ThemeOverlay.DevNews.Chip" parent="">
         <item name="colorSurface">@color/darkChipBackground</item>
     </style>
+
+    <style name="ThemeOverlay.DevNews.TextAppearance.Medium" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">@color/darkText</item>
+    </style>
+
+    <style name="ThemeOverlay.DevNews.TextAppearance.Large" parent="TextAppearance.AppCompat.Large">
+        <item name="android:textColor">@color/darkText</item>
+    </style>
 </resources>
