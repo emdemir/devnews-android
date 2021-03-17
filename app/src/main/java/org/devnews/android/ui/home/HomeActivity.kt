@@ -1,9 +1,13 @@
 package org.devnews.android.ui.home
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.os.Message
 import androidx.appcompat.widget.Toolbar
+import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.findNavController
+import androidx.navigation.*
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -13,10 +17,13 @@ import com.google.android.material.navigation.NavigationView
 import org.devnews.android.R
 import org.devnews.android.base.Activity
 import org.devnews.android.databinding.ActivityMainBinding
+import org.devnews.android.ui.home.messages.MessageListFragment
+import java.lang.IllegalStateException
 
 class HomeActivity : Activity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +41,7 @@ class HomeActivity : Activity() {
         val navView: NavigationView = binding.navView
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.main_nav_host) as NavHostFragment
-        val navController = navHostFragment.navController
+        navController = navHostFragment.navController
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -45,6 +52,29 @@ class HomeActivity : Activity() {
         navView.setupWithNavController(navController)
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if (intent == null) return
+
+        // If we were asked to start the message composer, navigate to the messages fragment and tell
+        // it to start the composer.
+        if (intent.getBooleanExtra(ARG_COMPOSING, false)) {
+            val username = intent.getStringExtra(ARG_COMPOSE_TARGET) ?: throw IllegalStateException(
+                "Did not pass username with composing intent!"
+            )
+
+            navController.navigate(
+                R.id.nav_message_list, bundleOf(
+                    MessageListFragment.ARG_COMPOSING to true,
+                    MessageListFragment.ARG_COMPOSE_TARGET to username
+                ), navOptions {
+                    popUpTo(R.id.nav_home) { inclusive = true }
+                    launchSingleTop = true
+                }
+            )
+        }
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.main_nav_host)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
@@ -52,5 +82,24 @@ class HomeActivity : Activity() {
 
     companion object {
         private const val TAG = "HomeActivity"
+        const val ARG_COMPOSING = "COMPOSING"
+        const val ARG_COMPOSE_TARGET = "COMPOSE_TARGET"
+
+        /**
+         * Launch home and navigate to the messages fragment, with a username to compose a message
+         * to.
+         *
+         * @param context Activity context
+         * @param username The username of the user to compose a message to
+         */
+        fun launchMessageComposer(context: Context, username: String) {
+            context.startActivity(Intent(context, HomeActivity::class.java).apply {
+                putExtra(ARG_COMPOSING, true)
+                putExtra(ARG_COMPOSE_TARGET, username)
+                // The way we reach this point is:
+                // home -> story/comment -> user -> home (MessageListFragment).
+                // Thsi c
+            })
+        }
     }
 }

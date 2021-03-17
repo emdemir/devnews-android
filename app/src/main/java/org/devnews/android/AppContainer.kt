@@ -7,6 +7,7 @@ import org.devnews.android.ui.home.messages.MessageListViewModel
 import org.devnews.android.ui.message.thread.MessageThreadViewModel
 import org.devnews.android.ui.story.StoryViewModel
 import org.devnews.android.ui.tag.TagViewModel
+import org.devnews.android.ui.user.UserDetailViewModel
 import org.devnews.android.utils.ViewModelFactory
 import org.devnews.android.ui.welcome.LoginViewModel
 import org.devnews.android.ui.welcome.RegisterViewModel
@@ -32,6 +33,7 @@ class AppContainer(application: DevNews) {
     private val commentService = retrofit.create(CommentService::class.java)
     private val tagService = retrofit.create(TagService::class.java)
     private val messageService = retrofit.create(MessageService::class.java)
+    private val userService = retrofit.create(UserService::class.java)
 
     // Repositories
     val authRepository = AuthRepository(authService)
@@ -40,6 +42,7 @@ class AppContainer(application: DevNews) {
     private val commentRepository = CommentRepository(commentService)
     private val tagRepository = TagRepository(tagService)
     private val messageRepository = MessageRepository(messageService)
+    private val userRepository = UserRepository(userService)
 
     // ViewModel factories
     val loginViewModelFactory = ViewModelFactory<LoginViewModel> {
@@ -62,5 +65,8 @@ class AppContainer(application: DevNews) {
     }
     val messageListViewModelFactory = ViewModelFactory<MessageListViewModel> {
         MessageListViewModel(messageRepository)
+    }
+    val userDetailViewModelFactory = ViewModelFactory<UserDetailViewModel> {
+        UserDetailViewModel(userRepository)
     }
 }

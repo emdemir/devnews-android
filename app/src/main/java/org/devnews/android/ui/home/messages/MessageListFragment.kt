@@ -15,6 +15,7 @@ import org.devnews.android.R
 import org.devnews.android.databinding.FragmentMessageListBinding
 import org.devnews.android.repository.adapters.MessageAdapter
 import org.devnews.android.ui.message.thread.MessageThreadActivity.Companion.launchMessageThread
+import java.lang.IllegalStateException
 
 class MessageListFragment : Fragment() {
     private val viewModel: MessageListViewModel by activityViewModels {
@@ -105,6 +106,8 @@ class MessageListFragment : Fragment() {
             binding.swipeRefresh.isRefreshing = false
         }
 
+        // --- Kicking it off ---
+
         // Load stories when we are initially created
         lifecycleScope.launchWhenCreated {
             // Make sure that we don't already have stories first.
@@ -113,14 +116,25 @@ class MessageListFragment : Fragment() {
             }
         }
 
+        // If we were asked to open the composer, then launch the CreateMessageDialog.
+        val arguments = arguments
+        if (arguments != null && arguments.getBoolean(ARG_COMPOSING, false)) {
+            val username = arguments.getString(ARG_COMPOSE_TARGET)
+                ?: throw IllegalStateException("Did not pass username with composing intent!")
+
+            createMessageDialog(username)
+        }
+
         return binding.root
     }
 
     /**
      * Creates a new "compose message" dialog.
+     *
+     * @param username Recipient username to fill in automatically
      */
-    private fun createMessageDialog() {
-        CreateMessageDialogFragment().show(
+    private fun createMessageDialog(username: String? = null) {
+        CreateMessageDialogFragment.newInstance(username).show(
             parentFragmentManager,
             CreateMessageDialogFragment.TAG
         )
@@ -148,6 +162,9 @@ class MessageListFragment : Fragment() {
     }
 
     companion object {
+        const val ARG_COMPOSING = "COMPOSING"
+        const val ARG_COMPOSE_TARGET = "COMPOSE_TARGET"
+
         private const val TAG = "MessageListFragment"
     }
 }

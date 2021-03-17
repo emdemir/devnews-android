@@ -32,6 +32,7 @@ import org.devnews.android.repository.adapters.StoryAdapter
 import org.devnews.android.ui.story.commenting.CreateCommentDialogFragment
 import org.devnews.android.ui.story.commenting.CreateCommentDialogFragment.Companion.CREATE_COMMENT_REQUEST
 import org.devnews.android.ui.story.commenting.CreateCommentDialogFragment.Companion.KEY_COMMENT
+import org.devnews.android.ui.user.UserDetailActivity.Companion.launchUserDetails
 import org.devnews.android.utils.openCustomTab
 import java.lang.IllegalStateException
 
@@ -141,6 +142,10 @@ class StoryActivity : Activity() {
         // When the upvote button is pressed, vote on the comment.
         adapter.setOnUpvoteListener {
             viewModel.voteOnComment(this, it)
+        }
+        // When the username is clicked, launch the user details.
+        adapter.setOnUsernameClickListener {
+            launchUserDetails(this, it)
         }
 
         // --- Progress bars & loading setup ---

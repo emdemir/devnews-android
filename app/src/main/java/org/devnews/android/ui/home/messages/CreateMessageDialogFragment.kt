@@ -67,6 +67,14 @@ class CreateMessageDialogFragment : BottomDialogFragment() {
             contentText.editText!!.setText(getString(KEY_CONTENT, ""))
         }
 
+        // If we were passed arguments, handle them.
+        arguments?.apply {
+            getString(ARG_RECIPIENT)?.let {
+                recipientText.editText!!.setText(it)
+                contentText.requestFocus()
+            }
+        }
+
         return view
     }
 
@@ -132,7 +140,20 @@ class CreateMessageDialogFragment : BottomDialogFragment() {
 
     companion object {
         const val TAG = "CreateMessageDialogFrag"
+        const val ARG_RECIPIENT = "RECIPIENT"
         const val KEY_RECIPIENT = "RECIPIENT"
         const val KEY_CONTENT = "CONTENT"
+
+        /**
+         * Create a new instance of this dialog.
+         *
+         * @param username If passed, will be filled in automatically
+         */
+        fun newInstance(username: String? = null) =
+            CreateMessageDialogFragment().apply {
+                arguments = bundleOf(
+                    ARG_RECIPIENT to username
+                )
+            }
     }
 }

@@ -25,6 +25,7 @@ class CommentAdapter(private val comments: List<Comment>) :
 
     private var onReplyListener: ((shortURL: String) -> Unit)? = null
     private var onUpvoteListener: ((shortURL: String) -> Unit)? = null
+    private var onUsernameClickListener: ((username: String) -> Unit)? = null
 
     init {
         setHasStableIds(true)
@@ -41,6 +42,7 @@ class CommentAdapter(private val comments: List<Comment>) :
         holder.bindData(comment)
         onReplyListener?.let { holder.setOnReplyListener(it) }
         onUpvoteListener?.let { holder.setOnUpvoteListener(it) }
+        onUsernameClickListener?.let { holder.setOnUsernameClickListener(it) }
     }
 
     override fun getItemCount() = comments.size
@@ -57,6 +59,10 @@ class CommentAdapter(private val comments: List<Comment>) :
         onUpvoteListener = listener
     }
 
+    fun setOnUsernameClickListener(listener: (username: String) -> Unit) {
+        onUsernameClickListener = listener
+    }
+
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val score: TextView = itemView.findViewById(R.id.score_text)
         private val byline: TextView = itemView.findViewById(R.id.comment_byline)
@@ -69,11 +75,14 @@ class CommentAdapter(private val comments: List<Comment>) :
 
         private var onReplyListener: ((shortURL: String) -> Unit)? = null
         private var onUpvoteListener: ((shortURL: String) -> Unit)? = null
+        private var onUsernameClickListener: ((username: String) -> Unit)? = null
 
         init {
             // When the byline is clicked, spawn user details page
             byline.setOnClickListener {
-                Toast.makeText(itemView.context, "TODO show user page", LENGTH_LONG).show()
+                username?.let {
+                    onUsernameClickListener?.invoke(it)
+                }
             }
 
             // When the reply button is clicked, if there is a reply listener, call it.
@@ -145,6 +154,10 @@ class CommentAdapter(private val comments: List<Comment>) :
 
         fun setOnUpvoteListener(listener: (shortURL: String) -> Unit) {
             onUpvoteListener = listener
+        }
+
+        fun setOnUsernameClickListener(listener: (username: String) -> Unit) {
+            onUsernameClickListener = listener
         }
     }
 }

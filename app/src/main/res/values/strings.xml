@@ -64,8 +64,17 @@
     <string name="validate_recipient_empty">Recipient name cannot be empty.</string>
     <string name="validate_content_empty">Message content cannot be empty.</string>
     <string name="error_recipient_not_found">That recipient wasn\'t found. Make sure you spelled the username correctly.</string>
-    <string name="send_message">Send messasge</string>
+    <string name="send_message">Send message</string>
     <string name="send_reply">Send reply</string>
-    <string name="field_content_reply">Enter your reply...</string>
+    <string name="field_content_reply">Enter your reply…</string>
     <string name="error_message_thread_not_found_reply">Could not find the comment thread. The thread may be deleted, or the recipient\'s account might have been removed.</string>
+    <string name="title_activity_user_detail">User Details</string>
+    <string name="user_detail_joined">Joined:</string>
+    <string name="user_detail_karma">Karma:</string>
+    <string name="user_detail_stories_submitted">Stories Submitted:</string>
+    <string name="user_detail_comments_posted">Comments Posted:</string>
+    <string name="user_detail_homepage">Homepage:</string>
+    <string name="user_detail_about">About:</string>
+    <string name="user_avatar">User avatar</string>
+    <string name="error_user_not_found">The user wasn\'t found. The account may have been disabled or removed by a moderator.</string>
 </resources>
