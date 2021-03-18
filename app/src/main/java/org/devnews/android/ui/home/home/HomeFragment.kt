@@ -1,6 +1,5 @@
 package org.devnews.android.ui.home.home
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -8,7 +7,6 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,7 +16,7 @@ import org.devnews.android.DevNews
 import org.devnews.android.R
 import org.devnews.android.databinding.FragmentHomeBinding
 import org.devnews.android.repository.adapters.StoryAdapter
-import org.devnews.android.ui.story.StoryActivity.Companion.launchStoryDetails
+import org.devnews.android.ui.story.details.StoryDetailsActivity.Companion.launchStoryDetails
 import org.devnews.android.ui.tag.TagActivity.Companion.launchTagActivity
 import org.devnews.android.utils.openCustomTab
 

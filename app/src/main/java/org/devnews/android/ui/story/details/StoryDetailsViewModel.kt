@@ -1,4 +1,4 @@
-package org.devnews.android.ui.story
+package org.devnews.android.ui.story.details
 
 import android.content.Context
 import android.util.Log
@@ -15,7 +15,7 @@ import org.devnews.android.repository.objects.Story
 import org.devnews.android.repository.wrapAPIError
 import java.lang.IllegalStateException
 
-class StoryViewModel(
+class StoryDetailsViewModel(
     private val storyRepository: StoryRepository,
     private val commentRepository: CommentRepository
 ) : CollectionViewModel<Comment>() {

@@ -18,7 +18,7 @@ import org.devnews.android.R
 import org.devnews.android.repository.adapters.StoryAdapter
 import org.devnews.android.base.Activity
 import org.devnews.android.databinding.ActivityTagBinding
-import org.devnews.android.ui.story.StoryActivity.Companion.launchStoryDetails
+import org.devnews.android.ui.story.details.StoryDetailsActivity.Companion.launchStoryDetails
 import org.devnews.android.utils.openCustomTab
 import java.lang.IllegalStateException
 

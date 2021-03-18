@@ -5,7 +5,7 @@ import org.devnews.android.repository.*
 import org.devnews.android.ui.home.home.HomeViewModel
 import org.devnews.android.ui.home.messages.MessageListViewModel
 import org.devnews.android.ui.message.thread.MessageThreadViewModel
-import org.devnews.android.ui.story.StoryViewModel
+import org.devnews.android.ui.story.details.StoryDetailsViewModel
 import org.devnews.android.ui.tag.TagViewModel
 import org.devnews.android.ui.user.UserDetailViewModel
 import org.devnews.android.utils.ViewModelFactory
@@ -54,8 +54,8 @@ class AppContainer(application: DevNews) {
     val homeViewModelFactory = ViewModelFactory<HomeViewModel> {
         HomeViewModel(indexRepository, storyRepository)
     }
-    val storyViewModelFactory = ViewModelFactory<StoryViewModel> {
-        StoryViewModel(storyRepository, commentRepository)
+    val storyViewModelFactory = ViewModelFactory<StoryDetailsViewModel> {
+        StoryDetailsViewModel(storyRepository, commentRepository)
     }
     val tagViewModelFactory = ViewModelFactory<TagViewModel> {
         TagViewModel(tagRepository, storyRepository)

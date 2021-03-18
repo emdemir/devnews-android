@@ -1,4 +1,4 @@
-package org.devnews.android.ui.story
+package org.devnews.android.ui.story.details
 
 import android.content.Context
 import android.content.Intent
@@ -26,18 +26,17 @@ import org.devnews.android.DevNews
 import org.devnews.android.R
 import org.devnews.android.repository.adapters.CommentAdapter
 import org.devnews.android.base.Activity
-import org.devnews.android.base.BottomDialogFragment
 import org.devnews.android.databinding.ActivityStoryBinding
 import org.devnews.android.repository.adapters.StoryAdapter
-import org.devnews.android.ui.story.commenting.CreateCommentDialogFragment
-import org.devnews.android.ui.story.commenting.CreateCommentDialogFragment.Companion.CREATE_COMMENT_REQUEST
-import org.devnews.android.ui.story.commenting.CreateCommentDialogFragment.Companion.KEY_COMMENT
+import org.devnews.android.ui.story.details.commenting.CreateCommentDialogFragment
+import org.devnews.android.ui.story.details.commenting.CreateCommentDialogFragment.Companion.CREATE_COMMENT_REQUEST
+import org.devnews.android.ui.story.details.commenting.CreateCommentDialogFragment.Companion.KEY_COMMENT
 import org.devnews.android.ui.user.UserDetailActivity.Companion.launchUserDetails
 import org.devnews.android.utils.openCustomTab
 import java.lang.IllegalStateException
 
-class StoryActivity : Activity() {
-    private val viewModel: StoryViewModel by viewModels(factoryProducer = {
+class StoryDetailsActivity : Activity() {
+    private val viewModel: StoryDetailsViewModel by viewModels(factoryProducer = {
         (application as DevNews).container.storyViewModelFactory
     })
     private lateinit var binding: ActivityStoryBinding
@@ -180,7 +179,7 @@ class StoryActivity : Activity() {
 
         // Load the story
         lifecycleScope.launchWhenCreated {
-            viewModel.loadStory(this@StoryActivity, shortURL)
+            viewModel.loadStory(this@StoryDetailsActivity, shortURL)
         }
     }
 
@@ -215,7 +214,7 @@ class StoryActivity : Activity() {
          * @param shortURL The short URL of the story
          */
         fun launchStoryDetails(context: Context, shortURL: String) {
-            val intent = Intent(context, StoryActivity::class.java)
+            val intent = Intent(context, StoryDetailsActivity::class.java)
             intent.putExtra(ARG_SHORT_URL, shortURL)
             context.startActivity(intent)
         }

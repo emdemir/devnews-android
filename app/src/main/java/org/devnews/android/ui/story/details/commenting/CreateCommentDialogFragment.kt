@@ -1,4 +1,4 @@
-package org.devnews.android.ui.story.commenting
+package org.devnews.android.ui.story.details.commenting
 
 import android.os.Bundle
 import android.view.View
