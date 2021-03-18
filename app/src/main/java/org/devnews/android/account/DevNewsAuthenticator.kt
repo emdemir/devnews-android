@@ -86,6 +86,7 @@ class DevNewsAuthenticator(private val context: Context) : AbstractAccountAuthen
         requiredFeatures: Array<out String>?,
         options: Bundle?
     ): Bundle {
+        Log.d(TAG, "addAccount()")
         if (accountType != ACCOUNT_TYPE) {
             return bundleOf(AccountManager.KEY_ERROR_MESSAGE to context.getString(R.string.unknown_account_type))
         }
@@ -107,6 +108,7 @@ class DevNewsAuthenticator(private val context: Context) : AbstractAccountAuthen
         account: Account,
         features: Array<out String>?
     ): Bundle {
+        Log.d(TAG, "hasFeatures()")
         // This is only called when we want to see whether this authenticator has any extra
         // features. We don't expect this to get called, so we can say false to everything.
         return bundleOf(AccountManager.KEY_BOOLEAN_RESULT to false)
@@ -119,15 +121,18 @@ class DevNewsAuthenticator(private val context: Context) : AbstractAccountAuthen
         p1: Account,
         p2: Bundle?
     ): Bundle? {
+        Log.d(TAG, "confirmCredentials()")
         return null
     }
 
     override fun getAuthTokenLabel(authTokenType: String?): String? {
         // We do not support multiple authToken types.
+        Log.d(TAG, "getAuthTokenLabel()")
         return null
     }
 
     override fun editProperties(p0: AccountAuthenticatorResponse?, p1: String?): Bundle? {
+        Log.d(TAG, "editProperties()")
         return null
     }
 
@@ -138,6 +143,7 @@ class DevNewsAuthenticator(private val context: Context) : AbstractAccountAuthen
         p2: String?,
         p3: Bundle?
     ): Bundle? {
+        Log.d(TAG, "updateCredentials()")
         return null
     }
 }
