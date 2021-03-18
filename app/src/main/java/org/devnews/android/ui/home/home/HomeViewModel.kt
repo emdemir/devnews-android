@@ -18,12 +18,12 @@ class HomeViewModel(
     /**
      * Fetch the stories for the current page.
      */
-    override suspend fun fetchData(context: Context, page: Int): List<Story>? {
+    override suspend fun fetchData(context: Context, page: Int): PaginatedList<Story>? {
         _error.value = null
         _loading.value = true
 
         // Load the data
-        var newStories: List<Story>? = null
+        var newStories: IndexService.IndexResponse? = null
         val error = wrapAPIError(context) {
             newStories = indexRepository.getIndex(page)
         }
@@ -35,7 +35,12 @@ class HomeViewModel(
             _error.value = error
             null
         } else {
-            newStories
+            PaginatedList(
+                newStories!!.stories,
+                newStories!!.page,
+                newStories!!.hasPreviousPage,
+                newStories!!.hasNextPage
+            )
         }
     }
 

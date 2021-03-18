@@ -13,7 +13,8 @@ import com.google.android.material.snackbar.Snackbar
 import org.devnews.android.DevNews
 import org.devnews.android.R
 import org.devnews.android.databinding.FragmentMessageListBinding
-import org.devnews.android.repository.adapters.MessageAdapter
+import org.devnews.android.repository.adapters.MessageListAdapter
+import org.devnews.android.repository.adapters.MessageThreadAdapter
 import org.devnews.android.ui.message.thread.MessageThreadActivity.Companion.launchMessageThread
 import java.lang.IllegalStateException
 
@@ -33,7 +34,7 @@ class MessageListFragment : Fragment() {
         // --- Message List Setup ---
 
         // Setup the recycler view and its adapter
-        val adapter = MessageAdapter(viewModel.items.value!!, false)
+        val adapter = MessageListAdapter(viewModel.items.value!!)
         binding.messageList.adapter = adapter
         binding.messageList.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
@@ -53,6 +54,17 @@ class MessageListFragment : Fragment() {
         viewModel.operation.observe(viewLifecycleOwner) {
             if (it == null) return@observe
             viewModel.notifyAdapter(adapter)
+        }
+
+        // --- Load More Setup ---
+
+        // If the adapter has scrolled past the last message, try to load more.
+        adapter.setOnLoadMoreListener {
+            viewModel.loadMore(requireContext())
+        }
+        // If we have reached the last page, disable "load more".
+        viewModel.lastPage.observe(viewLifecycleOwner) {
+            adapter.loadMore = !it
         }
 
         // --- Compose Message Setup ---

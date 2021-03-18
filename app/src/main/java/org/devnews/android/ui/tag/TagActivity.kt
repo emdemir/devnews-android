@@ -110,6 +110,17 @@ class TagActivity : Activity() {
             launchTagActivity(this, it)
         }
 
+        // --- Load More Setup ---
+
+        // If the adapter has scrolled past the last message, try to load more.
+        adapter.setOnLoadMoreListener {
+            viewModel.loadMore(this)
+        }
+        // If we have reached the last page, disable "load more".
+        viewModel.lastPage.observe(this) {
+            adapter.loadMore = !it
+        }
+
         // --- Swipe to Refresh Setup ---
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -122,7 +133,6 @@ class TagActivity : Activity() {
         // --- Loading/Progress Setup ---
 
         // Update the progress bar status.
-        // TODO: make this compatible with load more!
         viewModel.loading.observe(this) {
             binding.progress.visibility = if (viewModel.items.value!!.isEmpty()) {
                 if (it) VISIBLE else GONE

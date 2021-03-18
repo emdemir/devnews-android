@@ -5,7 +5,6 @@ import android.text.Html
 import android.text.SpannableString
 import android.text.TextUtils
 import android.text.format.DateUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
@@ -24,10 +23,8 @@ import java.lang.IllegalArgumentException
  * Adapts Message objects to a RecyclerView.
  *
  * @param messages The messages list.
- * @param thread Thread mode enables a reply box at the bottom and smaller text. If false then
- * larger text is used.
  */
-class MessageAdapter(private val messages: List<Message>, private val thread: Boolean) :
+class MessageThreadAdapter(private val messages: List<Message>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var replyDoneCallback: (() -> Unit)? = null
@@ -55,7 +52,7 @@ class MessageAdapter(private val messages: List<Message>, private val thread: Bo
     }
 
     override fun onBindViewHolder(_holder: RecyclerView.ViewHolder, position: Int) {
-        if (thread && position == messages.size) {
+        if (position == messages.size) {
             // Bind the reply box.
             val holder = _holder as ReplyViewHolder
             onReplyListener?.let { holder.setReplyListener(it) }
@@ -63,15 +60,15 @@ class MessageAdapter(private val messages: List<Message>, private val thread: Bo
             // Bind messages normally.
             val holder = _holder as MessageViewHolder
             val message = messages[position]
-            holder.bindData(message, thread)
+            holder.bindData(message, true)
             onMessageClickListener?.let { holder.setMessageClickListener(it) }
         }
     }
 
-    override fun getItemCount() = if (thread) messages.size + 1 else messages.size
+    override fun getItemCount() = messages.size + 1
 
     override fun getItemId(position: Int): Long {
-        return if (thread && position == messages.size) {
+        return if (position == messages.size) {
             0 // Messages will never get ID 0
         } else {
             messages[position].id.toLong()
@@ -79,7 +76,7 @@ class MessageAdapter(private val messages: List<Message>, private val thread: Bo
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (thread && position == messages.size) {
+        return if (position == messages.size) {
             TYPE_REPLY
         } else {
             TYPE_MESSAGE
@@ -104,73 +101,6 @@ class MessageAdapter(private val messages: List<Message>, private val thread: Bo
      */
     fun notifyReplyDone() {
         replyDoneCallback?.invoke()
-    }
-
-    /**
-     * The ViewHolder subclass for regular messages.
-     */
-    class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val senderRecipient: TextView = itemView.findViewById(R.id.message_sender_recipient)
-        private val date: TextView = itemView.findViewById(R.id.message_date)
-        private val content: TextView = itemView.findViewById(R.id.message_content)
-
-        private var onMessageClickListener: ((Int) -> Unit)? = null
-
-        private var messageID: Int? = null
-
-        init {
-            itemView.setOnClickListener {
-                messageID?.let {
-                    onMessageClickListener?.invoke(it)
-                }
-            }
-        }
-
-        fun bindData(message: Message, thread: Boolean) {
-            messageID = message.id
-
-            senderRecipient.text = itemView.context.getString(
-                R.string.sender_to_recipient,
-                message.author,
-                message.recipient
-            )
-
-            // Get time span for the message creation
-            val createdAt = message.sentAt.time
-            val now = System.currentTimeMillis()
-            date.text = DateUtils.getRelativeTimeSpanString(
-                createdAt, now,
-                DateUtils.MINUTE_IN_MILLIS
-            )
-
-            // Render the message content into HTML
-            val html = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Html.fromHtml(message.messageHtml, Html.FROM_HTML_MODE_COMPACT)
-            } else {
-                // We're already handling the deprecation case with the SDK version check.
-                @Suppress("DEPRECATION")
-                Html.fromHtml(message.messageHtml)
-            }
-            val spannableHtml = SpannableString(html).trim()
-            content.setText(spannableHtml, TextView.BufferType.SPANNABLE)
-
-            // If we are not in thread mode, then make the text larger and ellipsize it.
-            if (!thread) {
-                content.setTextAppearance(R.style.ThemeOverlay_DevNews_TextAppearance_Large)
-                content.ellipsize = TextUtils.TruncateAt.END
-                content.isSingleLine = true
-                content.setTextIsSelectable(false)
-            } else {
-                content.setTextAppearance(R.style.ThemeOverlay_DevNews_TextAppearance_Medium)
-                content.ellipsize = null
-                content.isSingleLine = false
-                content.setTextIsSelectable(true)
-            }
-        }
-
-        fun setMessageClickListener(listener: (Int) -> Unit) {
-            onMessageClickListener = listener
-        }
     }
 
     /**
@@ -202,7 +132,7 @@ class MessageAdapter(private val messages: List<Message>, private val thread: Bo
                     // Set the reply callback on the adapter binding us, so the view can notify
                     // us that the reply operation finished (success or otherwise).
                     bindingAdapter?.let {
-                        val adapter = it as MessageAdapter
+                        val adapter = it as MessageThreadAdapter
                         adapter.setReplyDoneCallback {
                             // Clear and remove error
                             contentText.editText!!.setText("")

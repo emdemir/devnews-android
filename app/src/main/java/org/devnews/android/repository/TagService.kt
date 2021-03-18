@@ -1,5 +1,6 @@
 package org.devnews.android.repository
 
+import com.google.gson.annotations.SerializedName
 import org.devnews.android.repository.objects.Story
 import org.devnews.android.repository.objects.Tag
 import retrofit2.http.GET
@@ -11,10 +12,13 @@ interface TagService {
     suspend fun getStoriesWithTag(
         @Path("tag") tag: String,
         @Query("page") page: Int = 1
-    ): TagResponse
+    ): StoriesWithTagResponse
 
-    data class TagResponse(
+    data class StoriesWithTagResponse(
         val tag: Tag,
-        val stories: List<Story>
+        val stories: List<Story>,
+        val page: Int,
+        @SerializedName("has_prev_page") val hasPreviousPage: Boolean,
+        @SerializedName("has_next_page") val hasNextPage: Boolean
     )
 }

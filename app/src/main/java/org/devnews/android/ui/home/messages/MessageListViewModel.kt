@@ -9,6 +9,7 @@ import org.devnews.android.R
 import org.devnews.android.repository.objects.Message
 import org.devnews.android.base.PaginatedViewModel
 import org.devnews.android.repository.MessageRepository
+import org.devnews.android.repository.MessageService
 import org.devnews.android.repository.wrapAPIError
 
 class MessageListViewModel(private val messageRepository: MessageRepository) :
@@ -25,18 +26,23 @@ class MessageListViewModel(private val messageRepository: MessageRepository) :
      * @param context Android content
      * @param page Page number to fetch
      */
-    override suspend fun fetchData(context: Context, page: Int): List<Message>? {
+    override suspend fun fetchData(context: Context, page: Int): PaginatedList<Message>? {
         _loading.value = true
 
-        var newMessages: List<Message>? = null
+        var newMessages: MessageService.MessageListResponse? = null
         val error = wrapAPIError(context) {
-            newMessages = messageRepository.getMessages(page).messages
+            newMessages = messageRepository.getMessages(page)
         }
 
         _loading.value = false
 
         return if (error == null) {
-            newMessages
+            PaginatedList(
+                newMessages!!.messages,
+                newMessages!!.page,
+                newMessages!!.hasPreviousPage,
+                newMessages!!.hasNextPage
+            )
         } else {
             _error.value = error
             null

@@ -4,15 +4,18 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.launch
 
 /**
  * A CollectionViewModel subclass that fetches data in pages.
  */
 abstract class PaginatedViewModel<T> : CollectionViewModel<T>() {
-    protected val _page = MutableLiveData(0)
+    private val _page = MutableLiveData(0)
+    private val _lastPage = MutableLiveData(false)
 
     val page: LiveData<Int> = _page
+    val lastPage: LiveData<Boolean> = _lastPage
 
     /**
      * Fetch data from the server for the given page.
@@ -23,7 +26,7 @@ abstract class PaginatedViewModel<T> : CollectionViewModel<T>() {
      * @param context Android context
      * @param page The page to load data for
      */
-    protected abstract suspend fun fetchData(context: Context, page: Int): List<T>?
+    protected abstract suspend fun fetchData(context: Context, page: Int): PaginatedList<T>?
 
     /**
      * Reset all Observables to initial status.
@@ -31,6 +34,7 @@ abstract class PaginatedViewModel<T> : CollectionViewModel<T>() {
     override fun resetState() {
         super.resetState()
         _page.value = 0
+        _lastPage.value = false
     }
 
     /**
@@ -44,11 +48,12 @@ abstract class PaginatedViewModel<T> : CollectionViewModel<T>() {
         val prevSize = items.size
 
         viewModelScope.launch {
-            val newItems = fetchData(context, page + 1) ?: return@launch
-            newItems.forEach { items.add(it) }
+            val response = fetchData(context, page + 1) ?: return@launch
+            response.items.forEach { items.add(it) }
 
-            collectionChanged(prevSize, newItems.size, OperationType.ADDED)
-            _page.value = page + 1
+            collectionChanged(prevSize, response.items.size, OperationType.ADDED)
+            _page.value = response.page
+            _lastPage.value = !response.hasNextPage
         }
     }
 
@@ -61,4 +66,20 @@ abstract class PaginatedViewModel<T> : CollectionViewModel<T>() {
         resetState()
         loadMore(context)
     }
+
+
+    /**
+     * This is the type that fetchData must return.
+     *
+     * @param items The items returned for this page.
+     * @param page The page number.
+     * @param hasPreviousPage Whether this page has a page before it.
+     * @param hasNextPage Whether this page has a page after it.
+     */
+    protected data class PaginatedList<T>(
+        val items: List<T>,
+        val page: Int,
+        val hasPreviousPage: Boolean,
+        val hasNextPage: Boolean
+    )
 }

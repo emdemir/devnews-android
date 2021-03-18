@@ -6,10 +6,8 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.widget.Toast.LENGTH_LONG
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,10 +18,7 @@ import org.devnews.android.R
 import org.devnews.android.base.Activity
 import org.devnews.android.base.CollectionViewModel
 import org.devnews.android.databinding.ActivityMessageThreadBinding
-import org.devnews.android.databinding.ActivityStoryBinding
-import org.devnews.android.repository.adapters.CommentAdapter
-import org.devnews.android.repository.adapters.MessageAdapter
-import org.devnews.android.ui.story.StoryActivity
+import org.devnews.android.repository.adapters.MessageThreadAdapter
 import java.lang.IllegalStateException
 
 class MessageThreadActivity : Activity() {
@@ -52,7 +47,7 @@ class MessageThreadActivity : Activity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         // Setup recycler for the message thread
-        val adapter = MessageAdapter(viewModel.items.value!!, true)
+        val adapter = MessageThreadAdapter(viewModel.items.value!!)
         binding.messageList.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         binding.messageList.adapter = adapter
         binding.messageList.addItemDecoration(

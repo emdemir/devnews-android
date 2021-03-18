@@ -16,14 +16,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import org.devnews.android.R
+import org.devnews.android.base.PaginatedAdapter
 import org.devnews.android.repository.objects.Story
 import org.devnews.android.utils.dpToPx
 import java.lang.IllegalStateException
 
 
 class StoryAdapter(
-    private val stories: List<Story>
-) : RecyclerView.Adapter<StoryAdapter.ViewHolder>() {
+    stories: List<Story>
+) : PaginatedAdapter<Story, StoryAdapter.ViewHolder>(stories) {
 
     enum class StoryType { URL, TEXT }
 
@@ -36,14 +37,14 @@ class StoryAdapter(
         setHasStableIds(true)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun createItemViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.list_item_story, parent, false)
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val story = stories[position]
+    override fun bindItemViewHolder(holder: ViewHolder, position: Int) {
+        val story = items[position]
         holder.bindData(story)
         onUpvoteClickListener?.let { holder.setUpvoteClickListener(it) }
         onCommentsClickListener?.let { holder.setCommentsClickListener(it) }
@@ -51,10 +52,8 @@ class StoryAdapter(
         onTagClickListener?.let { holder.setTagClickListener(it) }
     }
 
-    override fun getItemCount() = stories.size
-
-    override fun getItemId(position: Int): Long {
-        return stories[position].hashCode().toLong()
+    override fun onGetItemId(position: Int): Long {
+        return items[position].hashCode().toLong()
     }
 
     fun setUpvoteClickListener(listener: (String) -> Unit) {

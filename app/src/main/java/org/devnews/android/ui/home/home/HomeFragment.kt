@@ -24,7 +24,7 @@ import org.devnews.android.utils.openCustomTab
 
 class HomeFragment : Fragment() {
 
-    private val viewModel: HomeViewModel by viewModels {
+    private val viewModel: HomeViewModel by activityViewModels {
         (requireActivity().application as DevNews).container.homeViewModelFactory
     }
     private lateinit var binding: FragmentHomeBinding
@@ -75,6 +75,20 @@ class HomeFragment : Fragment() {
         viewModel.operation.observe(viewLifecycleOwner) {
             if (it == null) return@observe
             viewModel.notifyAdapter(adapter)
+        }
+
+        // --- Load More Setup ---
+
+        // When the adapter notifies us that the user has reached the end of the page, load more
+        // items from the viewmodel.
+        adapter.setOnLoadMoreListener {
+            viewModel.loadMore(requireContext())
+        }
+
+        // If the ViewModel has reached the final page, disable load more until the whole front page
+        // is refreshed.
+        viewModel.lastPage.observe(viewLifecycleOwner) {
+            adapter.loadMore = !it
         }
 
         // --- Swipe to Refresh Setup ---

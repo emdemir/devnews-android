@@ -4,12 +4,10 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
 import org.devnews.android.R
 import org.devnews.android.repository.StoryRepository
 import org.devnews.android.repository.TagRepository
+import org.devnews.android.repository.TagService
 import org.devnews.android.repository.objects.Story
 import org.devnews.android.repository.objects.Tag
 import org.devnews.android.repository.wrapAPIError
@@ -18,7 +16,7 @@ import java.lang.IllegalStateException
 
 class TagViewModel(
     private val tagRepository: TagRepository,
-    private val storyRepository: StoryRepository
+    storyRepository: StoryRepository
 ) : StoryListViewModel(storyRepository) {
     private val _tagName = MutableLiveData<String?>()
     private val _tag = MutableLiveData<Tag?>()
@@ -37,13 +35,13 @@ class TagViewModel(
         _tagName.value = tag
     }
 
-    override suspend fun fetchData(context: Context, page: Int): List<Story>? {
+    override suspend fun fetchData(context: Context, page: Int): PaginatedList<Story>? {
         val tag = _tagName.value
             ?: throw IllegalStateException("You must setTag() before loading stories!")
 
         _loading.value = true
 
-        var newStories: List<Story>? = null
+        var response: TagService.StoriesWithTagResponse? = null
         val error = wrapAPIError(context, {
             when (it) {
                 404 -> {
@@ -53,18 +51,22 @@ class TagViewModel(
                 else -> null
             }
         }) {
-            val response = tagRepository.getStoriesWithTag(tag, page)
-            newStories = response.stories
+            response = tagRepository.getStoriesWithTag(tag, page)
 
             if (_tag.value == null) {
-                _tag.value = response.tag
+                _tag.value = response!!.tag
             }
         }
 
         _loading.value = false
 
         return if (error == null) {
-            newStories
+            PaginatedList(
+                response!!.stories,
+                response!!.page,
+                response!!.hasPreviousPage,
+                response!!.hasNextPage
+            )
         } else {
             _error.value = error
             null
