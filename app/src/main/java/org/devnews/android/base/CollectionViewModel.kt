@@ -1,6 +1,5 @@
 package org.devnews.android.base
 
-import android.media.VolumeShaper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
@@ -55,13 +54,13 @@ open class CollectionViewModel<T> : ViewModel() {
      *
      * @param adapter The adapter object
      */
-    fun <VH : RecyclerView.ViewHolder?> notifyAdapter(adapter: RecyclerView.Adapter<VH>) {
+    open fun <VH : RecyclerView.ViewHolder?> notifyAdapter(adapter: RecyclerView.Adapter<VH>) {
         val updateStart = _updateStart.value
             ?: throw IllegalStateException("updateStart must have a value before calling notifyAdapter")
         val updateCount = _updateCount.value
             ?: throw IllegalStateException("updateCount must have a value before calling notifyAdapter")
         val operation = _operation.value
-            ?: throw IllegalStateException("updateCount must have a value before calling notifyAdapter")
+            ?: throw IllegalStateException("operation must have a value before calling notifyAdapter")
 
         if (updateCount < 1)
             return

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.launch
 
@@ -67,6 +68,22 @@ abstract class PaginatedViewModel<T> : CollectionViewModel<T>() {
         loadMore(context)
     }
 
+    override fun <VH : RecyclerView.ViewHolder?> notifyAdapter(adapter: RecyclerView.Adapter<VH>) {
+        super.notifyAdapter(adapter)
+
+        // HACK: when the state is reset, PaginatedAdapter will report its size as 0. But, this will
+        // cause a crash because RecyclerView sees that the loading item (for triggering Load More)
+        // is still visible. Thus, if we're resetting state, we should also remove an additional
+        // item from the end. I would want to implement this directly in PaginatedAdapter but
+        // both notifyItemRemoved and notifyItemRangeRemoved are final methods for some unfathomable
+        // reason.
+        (adapter as? PaginatedAdapter<*, *>)?.let {
+            val operation = operation.value
+            if (operation == OperationType.REMOVED && it.itemCount == 0) {
+                adapter.notifyItemRemoved(0)
+            }
+        }
+    }
 
     /**
      * This is the type that fetchData must return.
