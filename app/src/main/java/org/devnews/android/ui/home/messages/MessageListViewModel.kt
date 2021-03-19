@@ -73,4 +73,11 @@ class MessageListViewModel(private val messageRepository: MessageRepository) :
             _loading.value = false
         }
     }
+
+    /**
+     * Resets the message ID back to null.
+     */
+    fun resetMessageID() {
+        _messageID.value = null
+    }
 }

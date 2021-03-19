@@ -79,6 +79,10 @@ class MessageListFragment : Fragment() {
             if (it == null) return@observe
 
             dismissDialogAndLaunchThread(it)
+            // When we leave the messages segment of the app and come back, the ViewModel will
+            // still be alive, however this fragment will be recreated. Because of this, the message ID
+            // will cause the thread to automatically pop in. This prevents that.
+            viewModel.resetMessageID()
         }
 
         // --- Swipe to Refresh Setup ---
