@@ -4,26 +4,42 @@ import android.util.Log
 
 class AuthRepository(private val authService: AuthService) {
     /**
-     * Returns a token for the given username and password.
+     * Returns an access token for the given username and password.
      * Returns null if the user failed to authenticate.
      *
      * @param username The username of the user
      * @param password The password of the user
      */
-    suspend fun getToken(username: String, password: String): String {
-        Log.d(TAG, "getToken() username: $username")
-        return authService.getToken(AuthService.TokenParams(username, password)).token
+    suspend fun getAccessToken(username: String, password: String): AuthService.AuthResponse {
+        Log.d(TAG, "getAccessToken() username: $username")
+        return authService.getAccessToken(
+            AuthService.LoginParams(username, password),
+            "openid",
+            "code"
+        )
     }
 
     /**
-     * Renew an existing token.
-     * Returns null if the token couldn't be renewed.
+     * Fetch a new access token by supplying a refresh token.
      *
-     * @param token The previous token
+     * @param token The refresh token
      */
-    suspend fun renewToken(token: String): String {
-        Log.d(TAG, "renewToken()")
-        return authService.renewToken(AuthService.Token(token)).token
+    suspend fun refreshAccessToken(token: String): AuthService.AuthResponse {
+        Log.d(TAG, "refreshAccessToken()")
+        return authService.refreshAccessToken("Bearer $token")
+    }
+
+    /**
+     * Fetch the OpenID identity token for this user via the access token.
+     *
+     * @param token The access token
+     */
+    suspend fun getIdentityToken(token: String): AuthService.AuthResponse {
+        Log.d(TAG, "getIdentityToken()")
+        return authService.getIdentityToken(AuthService.TokenParams(
+            grantType = "authorization_code",
+            code = token
+        ))
     }
 
     companion object {

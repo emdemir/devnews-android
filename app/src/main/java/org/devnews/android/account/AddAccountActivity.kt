@@ -1,5 +1,6 @@
 package org.devnews.android.account
 
+import android.accounts.Account
 import android.accounts.AccountAuthenticatorResponse
 import android.accounts.AccountManager
 import android.os.Bundle
@@ -66,18 +67,30 @@ class AddAccountActivity : Activity() {
                     updateAccount(this, username, password, token, initialUsername)
                 }
 
+                // We've obtained the access token so far, but we also need to fetch the identity
+                // token which is required for all other requests.
+                val manager = AccountManager.get(this)
+                val account = Account(username, DevNewsAuthenticator.ACCOUNT_TYPE)
+                val identityToken = manager.getAuthToken(
+                    account,
+                    DevNewsAuthenticator.AUTHTOKEN_IDENTITY,
+                    Bundle(),
+                    this,
+                    null,
+                    null
+                ).result
+
                 response.onResult(
                     bundleOf(
                         AccountManager.KEY_ACCOUNT_NAME to username,
                         AccountManager.KEY_ACCOUNT_TYPE to DevNewsAuthenticator.ACCOUNT_TYPE,
-                        AccountManager.KEY_AUTHTOKEN to token
+                        AccountManager.KEY_AUTHTOKEN to identityToken
                     )
                 )
                 Log.d(TAG, "Added account, bye!")
                 finish()
             } catch (e: Exception) {
                 Log.e("AddAccountActivity", "Error when adding account", e)
-                // TODO: possible pre-defined error codes?
                 response.onError(1, getString(R.string.error_unknown))
             }
         }

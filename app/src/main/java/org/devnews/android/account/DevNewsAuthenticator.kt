@@ -11,20 +11,83 @@ import android.text.TextUtils
 import android.util.Log
 import androidx.core.os.bundleOf
 import com.auth0.android.jwt.JWT
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
 import org.devnews.android.DevNews
 import org.devnews.android.R
+import org.devnews.android.repository.AuthRepository
 import retrofit2.HttpException
-import kotlin.coroutines.coroutineContext
+import java.lang.IllegalStateException
 
 
 class DevNewsAuthenticator(private val context: Context) : AbstractAccountAuthenticator(context) {
     companion object {
         const val ACCOUNT_TYPE = "org.devnews"
-        const val AUTHTOKEN_TYPE = "default"
+        const val AUTHTOKEN_ACCESS = "access"
+        const val AUTHTOKEN_REFRESH = "refresh"
+        const val AUTHTOKEN_IDENTITY = "identity"
         private const val TAG = "DevNewsAuthenticator"
+    }
+
+    /**
+     * Get the access token for the given account.
+     */
+    private suspend fun getAccessToken(
+        repo: AuthRepository,
+        manager: AccountManager,
+        account: Account
+    ): String? {
+        Log.d(
+            TAG, "Access token requested, trying to refresh via refresh token " +
+                    "first."
+        )
+
+        var token: String? = null
+
+        val refreshToken = manager.peekAuthToken(account, AUTHTOKEN_REFRESH)
+        if (refreshToken != null) {
+            Log.d(TAG, "Got valid refresh token, refreshing...")
+            try {
+                val authResponse = repo.refreshAccessToken(refreshToken)
+                Log.d(TAG, "Successfully got the access token!")
+
+                authResponse.refreshToken?.let {
+                    Log.d(TAG, "Got refresh token, setting it in AccountManager")
+                    manager.setAuthToken(account, AUTHTOKEN_REFRESH, it)
+                }
+
+                authResponse.accessToken?.let {
+                    token = it
+                }
+            } catch (e: HttpException) {
+                Log.w(TAG, "Got an HTTP error while trying to refresh token...", e)
+            }
+        }
+
+        // If we were able to successfully fetch with the refresh token, exit.
+        if (token != null) return token
+
+        val password = manager.getPassword(account)
+        if (password != null) {
+            Log.d(TAG, "Getting access token from server...")
+            try {
+                val authResponse = repo.getAccessToken(account.name, password)
+                if (authResponse.accessToken == null)
+                    throw IllegalStateException("Didn't get access token?!")
+
+                Log.d(TAG, "Successfully got the access token!")
+
+                authResponse.refreshToken?.let {
+                    Log.d(TAG, "Got refresh token, setting it in AccountManager")
+                    manager.setAuthToken(account, AUTHTOKEN_REFRESH, it)
+                }
+
+                token = authResponse.accessToken
+            } catch (e: HttpException) {
+                Log.w(TAG, "Got an HTTP error while trying to fetch the access token...", e)
+            }
+        }
+
+        return token
     }
 
     override fun getAuthToken(
@@ -43,22 +106,54 @@ class DevNewsAuthenticator(private val context: Context) : AbstractAccountAuthen
             token = null
             // Try to authenticate the user
             val repo = (context.applicationContext as DevNews).container.authRepository
-            // Probably not so great... but couldn't figure out a better way.
-            val password = manager.getPassword(account)
-            if (password != null) {
-                Log.d(TAG, "Getting token from server...")
-                runBlocking {
-                    try {
-                        token = repo.getToken(account.name, password)
-                    } catch (e: HttpException) {
-                        Log.d(TAG, "Got an HTTP error, code: ${e.code()}")
+
+            runBlocking {
+                when (authTokenType) {
+                    AUTHTOKEN_ACCESS -> {
+                        token = getAccessToken(repo, manager, account)
+                    }
+                    AUTHTOKEN_IDENTITY -> {
+                        Log.d(TAG, "Identity token requested, trying to fetch with access token.")
+                        var accessToken = manager.peekAuthToken(account, AUTHTOKEN_ACCESS)
+
+                        if (accessToken == null) {
+                            Log.d(TAG, "Access token wasn't in cache, trying to get it")
+                            // If we didn't get the access token even after this, then there's
+                            // no way we can get it with current information.
+                            val newAccessToken = getAccessToken(repo, manager, account)
+                                ?: return@runBlocking
+                            Log.d(TAG, "Access token obtained. Setting it in AccountManager")
+                            manager.setAuthToken(account, AUTHTOKEN_ACCESS, accessToken)
+                            accessToken = newAccessToken
+                        }
+
+                        Log.d(TAG, "Now obtaining identity token!")
+
+                        try {
+                            val authResponse = repo.getIdentityToken(accessToken)
+                            if (authResponse.identityToken == null)
+                                return@runBlocking
+
+                            Log.d(TAG, "Got the identity token!")
+                            manager.setAuthToken(account, AUTHTOKEN_IDENTITY, token)
+                            token = authResponse.identityToken
+                        } catch (e: HttpException) {
+                            Log.w(
+                                TAG,
+                                "Got an HTTP exception while trying to fetch the identity token...",
+                                e
+                            )
+                        }
+                    }
+                    else -> {
+                        throw IllegalArgumentException("Invalid authentication token type.")
                     }
                 }
             }
         }
 
         if (!TextUtils.isEmpty(token)) {
-            Log.d(TAG, "Got the token")
+            Log.d(TAG, "Got the token successfully")
             return bundleOf(
                 AccountManager.KEY_ACCOUNT_NAME to account.name,
                 AccountManager.KEY_ACCOUNT_TYPE to account.type,
@@ -99,8 +194,7 @@ class DevNewsAuthenticator(private val context: Context) : AbstractAccountAuthen
             putExtra(AddAccountActivity.KEY_ADDING_NEW_ACCOUNT, true)
             putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response)
         }
-        val result = bundleOf(AccountManager.KEY_INTENT to intent)
-        return result
+        return bundleOf(AccountManager.KEY_INTENT to intent)
     }
 
     override fun hasFeatures(

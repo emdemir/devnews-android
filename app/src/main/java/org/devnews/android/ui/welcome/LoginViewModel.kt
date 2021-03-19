@@ -74,10 +74,10 @@ class LoginViewModel constructor(
                     else -> null
                 }
             }) {
-                val token = authRepository.getToken(username.value!!, password.value!!)
+                val authResponse = authRepository.getAccessToken(username.value!!, password.value!!)
                 Log.d(TAG, "Login success")
 
-                _token.value = token
+                _token.value = authResponse.accessToken
                 _loggedIn.value = true
             }
 

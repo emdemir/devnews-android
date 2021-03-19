@@ -17,7 +17,7 @@ import org.devnews.android.R
  * @param context The application/activity context
  * @param username The account username
  * @param password The password for the account
- * @param token Optional, sets the authentication token if given
+ * @param token Optional, sets the access token if given
  */
 fun addAccount(context: Context, username: String, password: String, token: String? = null) {
     val manager = AccountManager.get(context)
@@ -25,7 +25,7 @@ fun addAccount(context: Context, username: String, password: String, token: Stri
 
     manager.addAccountExplicitly(account, password, bundleOf())
     if (token != null)
-        manager.setAuthToken(account, DevNewsAuthenticator.AUTHTOKEN_TYPE, token)
+        manager.setAuthToken(account, DevNewsAuthenticator.AUTHTOKEN_ACCESS, token)
 }
 
 /**
@@ -35,7 +35,7 @@ fun addAccount(context: Context, username: String, password: String, token: Stri
  * @param context The application/activity context
  * @param username The account username
  * @param password The password for the account
- * @param token Optional, sets the authentication token if given
+ * @param token Optional, sets the access token if given
  * @param initialUsername if set, and doesn't match username, will update account name
  */
 fun updateAccount(
@@ -56,11 +56,11 @@ fun updateAccount(
 
     manager.setPassword(account, password)
     if (token != null)
-        manager.setAuthToken(account, DevNewsAuthenticator.AUTHTOKEN_TYPE, token)
+        manager.setAuthToken(account, DevNewsAuthenticator.AUTHTOKEN_ACCESS, token)
 }
 
 /**
- * Return an authentication token for the DevNews account that is currently saved on the device.
+ * Return an identity token for the DevNews account that is currently saved on the device.
  * The user is prompted to choose an account if they have more than one, and will be asked to create
  * an account if they have none.
  * This function should not be called from the main thread, because it will block while the
@@ -73,7 +73,7 @@ fun getAccountDetails(activity: Activity): Bundle {
     val manager = AccountManager.get(activity)
     val future = manager.getAuthTokenByFeatures(
         DevNewsAuthenticator.ACCOUNT_TYPE,
-        DevNewsAuthenticator.AUTHTOKEN_TYPE,
+        DevNewsAuthenticator.AUTHTOKEN_IDENTITY,
         arrayOf(),
         activity,
         null,
