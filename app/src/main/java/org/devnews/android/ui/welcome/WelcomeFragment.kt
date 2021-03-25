@@ -32,8 +32,5 @@ class WelcomeFragment : Fragment() {
         return binding.root
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance() = WelcomeFragment()
-    }
+    companion object
 }

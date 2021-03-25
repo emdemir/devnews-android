@@ -60,8 +60,7 @@
                 <TextView
                     android:id="@+id/comment_byline"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="3 hours ago by admin" />
+                    android:layout_height="wrap_content" />
 
                 <TextView
                     android:id="@+id/comment_unread"
@@ -79,7 +78,6 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="8dp"
                 android:paddingEnd="12dp"
-                android:text="Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet."
                 android:textIsSelectable="true"
                 tools:ignore="RtlSymmetry" />
 

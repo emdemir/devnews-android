@@ -4,11 +4,9 @@ import android.accounts.AccountManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Message
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.*
@@ -25,7 +23,6 @@ import org.devnews.android.account.getAccountDetails
 import org.devnews.android.base.Activity
 import org.devnews.android.databinding.ActivityMainBinding
 import org.devnews.android.ui.home.messages.MessageListFragment
-import java.lang.IllegalStateException
 
 class HomeActivity : Activity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -118,7 +115,6 @@ class HomeActivity : Activity() {
     }
 
     companion object {
-        private const val TAG = "HomeActivity"
         const val ARG_COMPOSING = "COMPOSING"
         const val ARG_COMPOSE_TARGET = "COMPOSE_TARGET"
 

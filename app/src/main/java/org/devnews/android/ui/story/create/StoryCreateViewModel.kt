@@ -6,7 +6,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.devnews.android.R
 import org.devnews.android.base.CollectionViewModel
@@ -45,7 +44,7 @@ class StoryCreateViewModel(
      *
      * @param context Android context
      */
-    fun validate(context: Context): Boolean {
+    private fun validate(context: Context): Boolean {
         var res = true
         res = validateTitle(context) == null && res
         res = validateURL(context) == null && res

@@ -136,7 +136,5 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
         private const val TAG = "LoginFragment"
 
-        @JvmStatic
-        fun newInstance() = LoginFragment()
     }
 }

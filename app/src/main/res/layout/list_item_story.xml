@@ -51,7 +51,6 @@
                 android:id="@+id/title_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Android Developers"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="?android:attr/colorForeground" />
 
@@ -69,7 +68,6 @@
                 android:id="@+id/domain_chip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="developers.android.com"
                 android:clickable="false"
                 android:focusable="false"
                 app:chipCornerRadius="6dp"
@@ -97,8 +95,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:text="3 hours ago by admin" />
+            android:layout_marginBottom="4dp" />
     </LinearLayout>
 
     <TextView

@@ -3,23 +3,18 @@ package org.devnews.android.ui.story.create
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.MenuItem
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import androidx.activity.viewModels
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.snackbar.Snackbar
 import org.devnews.android.DevNews
-import org.devnews.android.R
 import org.devnews.android.base.Activity
 import org.devnews.android.databinding.ActivityStoryCreateBinding
 import org.devnews.android.repository.adapters.TagAdapter
-import org.devnews.android.repository.objects.Tag
 import org.devnews.android.ui.story.details.StoryDetailsActivity.Companion.launchStoryDetails
 import org.devnews.android.utils.TextChanged
 import org.devnews.android.utils.dpToPx
@@ -172,7 +167,6 @@ class StoryCreateActivity : Activity() {
     }
 
     companion object {
-        private const val TAG = "StoryCreateActivity"
 
         /**
          * Launch the story creation activity.

@@ -8,24 +8,19 @@ import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import org.devnews.android.DevNews
 import org.devnews.android.R
-import org.devnews.android.repository.adapters.StoryAdapter
 import org.devnews.android.base.Activity
 import org.devnews.android.databinding.ActivityTagBinding
+import org.devnews.android.repository.adapters.StoryAdapter
 import org.devnews.android.ui.story.details.StoryDetailsActivity.Companion.launchStoryDetails
 import org.devnews.android.utils.openCustomTab
 import org.devnews.android.utils.setErrorState
 import org.devnews.android.utils.setProgressState
 import org.devnews.android.utils.setupRecyclerView
-import java.lang.IllegalStateException
 
 class TagActivity : Activity() {
     private val viewModel: TagViewModel by viewModels {

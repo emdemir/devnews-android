@@ -66,25 +66,5 @@ data class Comment(
             return list
         }
 
-        /**
-         * Searches for a comment matching the given predicate recursively.
-         *
-         * @param comments A list of comments to search.
-         * @param predicate A lambda returning true when the comment matches.
-         * @return The comment if it was found, null if it wasn't.
-         */
-        fun findComment(comments: List<Comment>, predicate: (Comment) -> Boolean): Comment? {
-            comments.forEach { comment ->
-                if (predicate(comment))
-                    return comment
-
-                val children = comment.children
-                if (children != null) {
-                    findComment(children, predicate)?.let { return it }
-                }
-            }
-
-            return null
-        }
     }
 }

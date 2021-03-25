@@ -8,9 +8,6 @@ import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import org.devnews.android.DevNews
 import org.devnews.android.R
 import org.devnews.android.base.Activity

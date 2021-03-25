@@ -4,18 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.text.Html
-import android.text.SpannableString
 import android.text.TextUtils
-import android.view.MenuItem
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
-import android.view.View.NOT_FOCUSABLE
+import android.view.View.*
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -24,9 +18,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import org.devnews.android.DevNews
 import org.devnews.android.R
-import org.devnews.android.repository.adapters.CommentAdapter
 import org.devnews.android.base.Activity
 import org.devnews.android.databinding.ActivityStoryDetailsBinding
+import org.devnews.android.repository.adapters.CommentAdapter
 import org.devnews.android.repository.adapters.StoryAdapter
 import org.devnews.android.ui.story.details.commenting.CreateCommentDialogFragment
 import org.devnews.android.ui.story.details.commenting.CreateCommentDialogFragment.Companion.CREATE_COMMENT_REQUEST
@@ -36,7 +30,6 @@ import org.devnews.android.utils.htmlToSpanned
 import org.devnews.android.utils.openCustomTab
 import org.devnews.android.utils.setErrorState
 import org.devnews.android.utils.setProgressState
-import java.lang.IllegalStateException
 
 class StoryDetailsActivity : Activity() {
     private val viewModel: StoryDetailsViewModel by viewModels(factoryProducer = {

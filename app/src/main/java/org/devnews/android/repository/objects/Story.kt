@@ -1,11 +1,6 @@
 package org.devnews.android.repository.objects
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import androidx.browser.customtabs.CustomTabsIntent
 import com.google.gson.annotations.SerializedName
-import java.lang.IllegalStateException
 import java.net.URL
 import java.util.*
 

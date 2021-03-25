@@ -50,7 +50,7 @@ class RegisterViewModel(
         }
     }
 
-    fun validate(context: Context): Boolean {
+    private fun validate(context: Context): Boolean {
         var ret = true
         ret = validateUsername(context) == null && ret
         ret = validateEmail(context, true) == null && ret

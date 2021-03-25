@@ -64,7 +64,6 @@
                 android:layout_height="wrap_content"
                 android:clickable="false"
                 android:focusable="false"
-                android:text="programming"
                 app:chipCornerRadius="6dp"
                 app:chipMinTouchTargetSize="0dp"
                 tools:layout_editor_absoluteX="122dp"
@@ -74,7 +73,6 @@
                 android:id="@+id/tag_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Programming and related things"
                 android:paddingBottom="8dp"
                 tools:layout_editor_absoluteY="40dp" />
 

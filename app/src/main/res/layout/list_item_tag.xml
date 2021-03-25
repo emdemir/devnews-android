@@ -12,8 +12,7 @@
         style="@style/ThemeOverlay.DevNews.TextAppearance.Medium"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight=".40"
-        android:text="programming" />
+        android:layout_weight=".40" />
 
     <TextView
         android:id="@+id/tag_description"
@@ -22,7 +21,6 @@
         android:layout_weight=".60"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textAlignment="viewEnd"
-        android:text="Stories about programming and development related things" />
+        android:textAlignment="viewEnd" />
 
 </LinearLayout>

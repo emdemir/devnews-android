@@ -6,20 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.*
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import org.devnews.android.DevNews
 import org.devnews.android.R
 import org.devnews.android.databinding.FragmentMessageListBinding
 import org.devnews.android.repository.adapters.MessageListAdapter
-import org.devnews.android.repository.adapters.MessageThreadAdapter
 import org.devnews.android.ui.message.thread.MessageThreadActivity.Companion.launchMessageThread
 import org.devnews.android.utils.setErrorState
 import org.devnews.android.utils.setProgressState
 import org.devnews.android.utils.setupRecyclerView
-import java.lang.IllegalStateException
 
 class MessageListFragment : Fragment() {
     private val viewModel: MessageListViewModel by activityViewModels {
@@ -179,6 +174,5 @@ class MessageListFragment : Fragment() {
         const val ARG_COMPOSING = "COMPOSING"
         const val ARG_COMPOSE_TARGET = "COMPOSE_TARGET"
 
-        private const val TAG = "MessageListFragment"
     }
 }

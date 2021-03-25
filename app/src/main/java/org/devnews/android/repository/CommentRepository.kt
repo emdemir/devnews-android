@@ -1,12 +1,6 @@
 package org.devnews.android.repository
 
 class CommentRepository(private val commentService: CommentService) {
-    /**
-     * Get a comment by its short URL.
-     *
-     * @param shortURL The short URL for the comment.
-     */
-    suspend fun getCommentByShortURL(shortURL: String) = commentService.getComment(shortURL)
 
     /**
      * Create a new comment.

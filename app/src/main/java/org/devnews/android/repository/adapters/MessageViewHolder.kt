@@ -1,8 +1,5 @@
 package org.devnews.android.repository.adapters
 
-import android.os.Build
-import android.text.Html
-import android.text.SpannableString
 import android.text.TextUtils
 import android.text.format.DateUtils
 import android.view.View

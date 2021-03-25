@@ -3,23 +3,18 @@ package org.devnews.android.ui.user
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View.GONE
-import android.view.View.VISIBLE
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import org.devnews.android.DevNews
 import org.devnews.android.R
 import org.devnews.android.base.Activity
 import org.devnews.android.databinding.ActivityUserDetailBinding
-import org.devnews.android.repository.objects.User
 import org.devnews.android.ui.home.HomeActivity
 import org.devnews.android.utils.setProgressState
-import java.lang.IllegalStateException
 
 class UserDetailActivity : Activity() {
     private val viewModel: UserDetailViewModel by viewModels {
@@ -97,7 +92,6 @@ class UserDetailActivity : Activity() {
     }
 
     companion object {
-        private const val TAG = "UserDetailActivity"
         const val ARG_USERNAME = "USERNAME"
 
         /**

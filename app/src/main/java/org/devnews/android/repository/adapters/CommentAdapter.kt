@@ -1,9 +1,5 @@
 package org.devnews.android.repository.adapters
 
-import android.os.Build
-import android.text.Html
-import android.text.Html.FROM_HTML_MODE_COMPACT
-import android.text.SpannableString
 import android.text.format.DateUtils
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -13,8 +9,6 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
-import android.widget.Toast.LENGTH_LONG
 import androidx.core.content.ContextCompat
 import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.RecyclerView

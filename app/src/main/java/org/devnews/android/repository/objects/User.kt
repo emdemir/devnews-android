@@ -1,14 +1,8 @@
 package org.devnews.android.repository.objects
 
-import android.os.Build
-import android.text.Html
-import android.text.SpannableString
-import android.text.Spanned
 import android.text.format.DateUtils
-import android.util.Log
 import com.google.gson.annotations.SerializedName
 import org.devnews.android.utils.htmlToSpanned
-import java.lang.NullPointerException
 import java.util.*
 
 data class User(

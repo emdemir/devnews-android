@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
-import java.lang.IllegalStateException
 
 /**
  * Open a browser page for a given URL using the Custom Tabs API.

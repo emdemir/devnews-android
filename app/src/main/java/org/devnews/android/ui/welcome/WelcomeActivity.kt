@@ -5,20 +5,19 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import androidx.activity.viewModels
-import androidx.appcompat.widget.Toolbar
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import org.devnews.android.DevNews
-import org.devnews.android.ui.home.HomeActivity
 import org.devnews.android.R
 import org.devnews.android.account.DevNewsAuthenticator
 import org.devnews.android.account.addAccount
 import org.devnews.android.account.hasAccount
 import org.devnews.android.base.Activity
 import org.devnews.android.databinding.ActivityWelcomeBinding
+import org.devnews.android.ui.home.HomeActivity
 
 class WelcomeActivity : Activity() {
     private lateinit var binding: ActivityWelcomeBinding

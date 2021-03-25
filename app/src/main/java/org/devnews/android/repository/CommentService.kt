@@ -8,8 +8,6 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface CommentService {
-    @GET("/c/{short_url}/")
-    suspend fun getComment(@Path("short_url") shortURL: String): Comment
 
     @POST("/c/")
     suspend fun createComment(@Body params: CommentCreate): Comment

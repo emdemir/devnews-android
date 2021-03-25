@@ -2,10 +2,8 @@
 <resources>
     <!-- from material.io -->
     <color name="primaryColor">#50aded</color>
-    <color name="primaryLightColor">#86c3ed</color>
     <color name="primaryDarkColor">#3676a1</color>
     <color name="secondaryColor">#81c784</color>
-    <color name="secondaryLightColor">#b2fab4</color>
     <color name="secondaryDarkColor">#519657</color>
     <color name="primaryTextColor">#000000</color>
     <color name="primaryTextRipple">#3f000000</color>

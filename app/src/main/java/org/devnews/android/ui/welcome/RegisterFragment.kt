@@ -61,8 +61,5 @@ class RegisterFragment : Fragment() {
         }
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance() = RegisterFragment()
-    }
+    companion object
 }

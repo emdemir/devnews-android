@@ -194,7 +194,5 @@ class StoryAdapter(
         }
     }
 
-    companion object {
-        private const val TAG = "StoryAdapter"
-    }
+    companion object
 }

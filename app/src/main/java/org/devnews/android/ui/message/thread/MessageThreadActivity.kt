@@ -3,15 +3,10 @@ package org.devnews.android.ui.message.thread
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.activity.viewModels
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import org.devnews.android.DevNews
 import org.devnews.android.R
@@ -22,7 +17,6 @@ import org.devnews.android.repository.adapters.MessageThreadAdapter
 import org.devnews.android.utils.setErrorState
 import org.devnews.android.utils.setProgressState
 import org.devnews.android.utils.setupRecyclerView
-import java.lang.IllegalStateException
 
 class MessageThreadActivity : Activity() {
     private val viewModel: MessageThreadViewModel by viewModels {

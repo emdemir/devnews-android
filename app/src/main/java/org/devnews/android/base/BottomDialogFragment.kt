@@ -1,7 +1,6 @@
 package org.devnews.android.base
 
 import android.app.Dialog
-import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.TypedValue
@@ -12,8 +11,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.devnews.android.R
-import java.lang.ClassCastException
-import java.lang.IllegalStateException
 
 /**
  * Dialog fragment that sets itself to sit at the bottom, right above the keyboard. This is useful

@@ -1,23 +1,17 @@
 package org.devnews.android.repository.adapters
 
-import android.os.Build
-import android.text.Html
-import android.text.SpannableString
 import android.text.TextUtils
-import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import org.devnews.android.R
 import org.devnews.android.repository.objects.Message
 import org.devnews.android.utils.TextChanged
-import java.lang.IllegalArgumentException
 
 /**
  * Adapts Message objects to a RecyclerView.
@@ -81,10 +75,6 @@ class MessageThreadAdapter(private val messages: List<Message>) :
         } else {
             TYPE_MESSAGE
         }
-    }
-
-    fun setMessageClickListener(listener: (Int) -> Unit) {
-        onMessageClickListener = listener
     }
 
     fun setReplyListener(listener: (String) -> Unit) {

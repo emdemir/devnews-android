@@ -1,15 +1,12 @@
 package org.devnews.android.ui.home.home
 
 import android.content.Context
-import android.util.Log
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
-import org.devnews.android.R
-import org.devnews.android.base.PaginatedViewModel
-import org.devnews.android.repository.*
+import org.devnews.android.repository.IndexRepository
+import org.devnews.android.repository.IndexService
+import org.devnews.android.repository.StoryRepository
 import org.devnews.android.repository.objects.Story
+import org.devnews.android.repository.wrapAPIError
 import org.devnews.android.ui.common.StoryListViewModel
-import java.lang.IllegalArgumentException
 
 class HomeViewModel(
     private val indexRepository: IndexRepository,
