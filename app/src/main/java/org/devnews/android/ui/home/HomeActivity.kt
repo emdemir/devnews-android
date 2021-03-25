@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Message
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
@@ -17,6 +18,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.auth0.android.jwt.JWT
 import com.google.android.material.navigation.NavigationView
+import com.squareup.picasso.Picasso
 import org.devnews.android.R
 import org.devnews.android.account.getAccountDetails
 import org.devnews.android.base.Activity
@@ -36,9 +38,7 @@ class HomeActivity : Activity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Set the application toolbar
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        setupToolbar()
 
         // Setup drawer navigation, using the Navigation androidX library
         val drawerLayout: DrawerLayout = binding.drawerLayout
@@ -71,9 +71,11 @@ class HomeActivity : Activity() {
             runOnUiThread {
                 val username: TextView = findViewById(R.id.user_username)
                 val email: TextView = findViewById(R.id.user_email)
+                val avatar: ImageView = findViewById(R.id.user_avatar)
 
                 username.text = jwt.subject
                 email.text = jwt.getClaim("email").asString()
+                Picasso.get().load(jwt.getClaim("avatar").asString()).resize(128, 128).into(avatar)
             }
         }
 

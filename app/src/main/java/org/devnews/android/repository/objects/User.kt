@@ -7,6 +7,7 @@ import android.text.Spanned
 import android.text.format.DateUtils
 import android.util.Log
 import com.google.gson.annotations.SerializedName
+import org.devnews.android.utils.htmlToSpanned
 import java.lang.NullPointerException
 import java.util.*
 
@@ -51,14 +52,7 @@ data class User(
      */
     fun getAboutSpanned(): CharSequence {
         return try {
-            val html = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Html.fromHtml(aboutHtml, Html.FROM_HTML_MODE_COMPACT)
-            } else {
-                // We're already handling the deprecation case with the SDK version check.
-                @Suppress("DEPRECATION")
-                Html.fromHtml(aboutHtml)
-            }
-            SpannableString(html).trim()
+            htmlToSpanned(aboutHtml)
         } catch (e: NullPointerException) {
             // Same business as above.
             ""

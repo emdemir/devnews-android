@@ -28,7 +28,6 @@ open class CollectionViewModel<T> : ViewModel() {
         val size = _items.value!!.size
         // Clear all data and errors
         (_items.value!! as ArrayList<T>).clear()
-        _loading.value = false
         _error.value = null
 
         // We need to notify the Adapter about all the removed items, otherwise we'll get a crash

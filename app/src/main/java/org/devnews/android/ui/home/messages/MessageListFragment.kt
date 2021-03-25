@@ -16,6 +16,9 @@ import org.devnews.android.databinding.FragmentMessageListBinding
 import org.devnews.android.repository.adapters.MessageListAdapter
 import org.devnews.android.repository.adapters.MessageThreadAdapter
 import org.devnews.android.ui.message.thread.MessageThreadActivity.Companion.launchMessageThread
+import org.devnews.android.utils.setErrorState
+import org.devnews.android.utils.setProgressState
+import org.devnews.android.utils.setupRecyclerView
 import java.lang.IllegalStateException
 
 class MessageListFragment : Fragment() {
@@ -30,20 +33,15 @@ class MessageListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMessageListBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         // --- Message List Setup ---
 
         // Setup the recycler view and its adapter
         val adapter = MessageListAdapter(viewModel.items.value!!)
-        binding.messageList.adapter = adapter
-        binding.messageList.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        binding.messageList.addItemDecoration(
-            DividerItemDecoration(
-                requireContext(),
-                DividerItemDecoration.VERTICAL
-            )
-        )
+        setupRecyclerView(binding.messageList, adapter, true)
 
         // When a message is clicked, launch the message thread.
         adapter.setMessageClickListener {
@@ -99,27 +97,28 @@ class MessageListFragment : Fragment() {
         // Show/hide progress bar based on the loading value, but only if we don't have any stories
         // yet.
         viewModel.loading.observe(viewLifecycleOwner) {
-            binding.progress.visibility =
-                if (viewModel.items.value!!.isEmpty() && !binding.swipeRefresh.isRefreshing) {
-                    if (it) View.VISIBLE else View.GONE
-                } else {
-                    View.GONE
-                }
-            // Also let SwipeRefresh know we aren't refreshing anymore.
-            if (!it) binding.swipeRefresh.isRefreshing = false
+            setProgressState(
+                it,
+                viewModel.error.value,
+                binding.progress,
+                binding.messageList,
+                binding.swipeRefresh
+            )
         }
 
         // --- Error handling setup ---
 
         // If error message is reported to us, then show error with refresh button.
         viewModel.error.observe(viewLifecycleOwner) {
-            if (it == null) return@observe
-
             // If the dialog is displayed in front of us then display the snackbar on the dialog.
-            val viewToShowIn = getDialogFragment()?.dialog?.window?.decorView ?: binding.root
-            Snackbar.make(viewToShowIn, it, Snackbar.LENGTH_LONG).show()
-
-            binding.swipeRefresh.isRefreshing = false
+            val dialogView = getDialogFragment()?.dialog?.window?.decorView
+            if (dialogView != null && it != null) {
+                Snackbar.make(dialogView, it, Snackbar.LENGTH_LONG).show()
+            } else if (viewModel.items.value!!.isNotEmpty() && it != null) {
+                Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
+            } else {
+                setErrorState(it, binding.error)
+            }
         }
 
         // --- Kicking it off ---
@@ -141,7 +140,6 @@ class MessageListFragment : Fragment() {
             createMessageDialog(username)
         }
 
-        return binding.root
     }
 
     /**

@@ -20,6 +20,9 @@ import org.devnews.android.ui.story.create.StoryCreateActivity.Companion.launchS
 import org.devnews.android.ui.story.details.StoryDetailsActivity.Companion.launchStoryDetails
 import org.devnews.android.ui.tag.TagActivity.Companion.launchTagActivity
 import org.devnews.android.utils.openCustomTab
+import org.devnews.android.utils.setErrorState
+import org.devnews.android.utils.setProgressState
+import org.devnews.android.utils.setupRecyclerView
 
 class HomeFragment : Fragment() {
 
@@ -34,20 +37,15 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         // --- Story List Setup ---
 
         // Load the stories and adjust the RecyclerView
         val adapter = StoryAdapter(viewModel.items.value!!)
-        binding.storyList.adapter = adapter
-        binding.storyList.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        binding.storyList.addItemDecoration(
-            DividerItemDecoration(
-                requireContext(),
-                DividerItemDecoration.VERTICAL
-            )
-        )
+        setupRecyclerView(binding.storyList, adapter, true)
 
         // Setup the event handlers for each interaction
         adapter.setUpvoteClickListener {
@@ -90,7 +88,6 @@ class HomeFragment : Fragment() {
         adapter.setOnLoadMoreListener {
             viewModel.loadMore(requireContext())
         }
-
         // If the ViewModel has reached the final page, disable load more until the whole front page
         // is refreshed.
         viewModel.lastPage.observe(viewLifecycleOwner) {
@@ -111,27 +108,26 @@ class HomeFragment : Fragment() {
         // Show/hide progress bar based on the loading value, but only if we don't have any stories
         // yet.
         viewModel.loading.observe(viewLifecycleOwner) {
-            if (viewModel.items.value!!.isEmpty() && !binding.swipeRefresh.isRefreshing) {
-                binding.progress.visibility = if (it) VISIBLE else GONE
-                binding.storyList.visibility = if (it) GONE else VISIBLE
-            } else {
-                binding.progress.visibility = GONE
-                binding.storyList.visibility = VISIBLE
-            }
-
-            // Also let SwipeRefresh know we aren't refreshing anymore.
-            if (!it) binding.swipeRefresh.isRefreshing = false
+            setProgressState(
+                it,
+                viewModel.error.value,
+                binding.progress,
+                binding.storyList,
+                binding.swipeRefresh
+            )
         }
 
         // --- Error handling setup ---
 
         // If error message is reported to us, then show error with refresh button.
         viewModel.error.observe(viewLifecycleOwner) {
-            if (it != null) {
+            if (viewModel.items.value!!.isNotEmpty() && it != null) {
                 Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG)
                     .setAction(R.string.try_again) {
                         viewModel.loadMore(requireContext())
                     }.show()
+            } else {
+                setErrorState(it, binding.error)
             }
         }
 
@@ -142,8 +138,6 @@ class HomeFragment : Fragment() {
                 viewModel.loadFromStart(requireContext())
             }
         }
-
-        return binding.root
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

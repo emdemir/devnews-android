@@ -32,7 +32,10 @@ import org.devnews.android.ui.story.details.commenting.CreateCommentDialogFragme
 import org.devnews.android.ui.story.details.commenting.CreateCommentDialogFragment.Companion.CREATE_COMMENT_REQUEST
 import org.devnews.android.ui.story.details.commenting.CreateCommentDialogFragment.Companion.KEY_COMMENT
 import org.devnews.android.ui.user.UserDetailActivity.Companion.launchUserDetails
+import org.devnews.android.utils.htmlToSpanned
 import org.devnews.android.utils.openCustomTab
+import org.devnews.android.utils.setErrorState
+import org.devnews.android.utils.setProgressState
 import java.lang.IllegalStateException
 
 class StoryDetailsActivity : Activity() {
@@ -54,10 +57,7 @@ class StoryDetailsActivity : Activity() {
         binding = ActivityStoryDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Setup toolbar
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        setupToolbar(true)
 
         // Setup recycler for comments
         val adapter = CommentAdapter(viewModel.items.value!!)
@@ -84,15 +84,10 @@ class StoryDetailsActivity : Activity() {
             if (TextUtils.isEmpty(it.textHtml)) {
                 binding.storyContents.visibility = GONE
             } else {
-                val html = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    Html.fromHtml(it.textHtml, Html.FROM_HTML_MODE_COMPACT)
-                } else {
-                    // We're already handling the deprecation case with the SDK version check.
-                    @Suppress("DEPRECATION")
-                    Html.fromHtml(it.textHtml)
-                }
-                val spannableHtml = SpannableString(html).trim()
-                binding.storyContents.setText(spannableHtml, TextView.BufferType.SPANNABLE)
+                binding.storyContents.setText(
+                    htmlToSpanned(it.textHtml!!),
+                    TextView.BufferType.SPANNABLE
+                )
                 binding.storyContents.visibility = VISIBLE
             }
         }
@@ -111,6 +106,7 @@ class StoryDetailsActivity : Activity() {
         // Clicking the "new comment" box launches a dialog with the comment box.
         val newCommentText: EditText = findViewById(R.id.new_comment_text)
         val sendButton: ImageView = findViewById(R.id.send_button)
+        // This is needed so we don't need to click the comment box twice to launch the dialog.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             newCommentText.focusable = NOT_FOCUSABLE
         }
@@ -147,31 +143,22 @@ class StoryDetailsActivity : Activity() {
             launchUserDetails(this, it)
         }
 
-        // --- Progress bars & loading setup ---
-
-        // When loading is complete, hide the progress bar and show the view
         viewModel.loading.observe(this) {
-            if (viewModel.story.value == null) {
-                binding.storyContainer.visibility = if (it) GONE else VISIBLE
-                binding.progress.visibility = if (it) VISIBLE else GONE
-            } else {
-                binding.storyContainer.visibility = VISIBLE
-                binding.progress.visibility = GONE
-            }
+            setProgressState(
+                it,
+                viewModel.error.value,
+                binding.progress,
+                binding.storyContainer
+            )
         }
-
-        // --- Error handling setup ---
 
         // Pop up a Snackbar if an error occurs, and if the story is null (something happened while
         // loading the story), display it in the middle of the screen.
         viewModel.error.observe(this) {
-            if (it == null) return@observe
-
-            // TODO: display it in the middle of the screen.
-            if (viewModel.story.value != null) {
+            if (viewModel.items.value!!.isNotEmpty() && it != null) {
                 Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
             } else {
-                // TODO
+                setErrorState(it, binding.error)
             }
         }
 
@@ -193,15 +180,6 @@ class StoryDetailsActivity : Activity() {
             supportFragmentManager,
             CreateCommentDialogFragment.TAG
         )
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            // If the user presses the <- button, finish activity
-            android.R.id.home -> finish()
-        }
-
-        return super.onOptionsItemSelected(item)
     }
 
     companion object {

@@ -8,11 +8,13 @@ import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import org.devnews.android.DevNews
 import org.devnews.android.R
 import org.devnews.android.repository.adapters.StoryAdapter
@@ -20,6 +22,9 @@ import org.devnews.android.base.Activity
 import org.devnews.android.databinding.ActivityTagBinding
 import org.devnews.android.ui.story.details.StoryDetailsActivity.Companion.launchStoryDetails
 import org.devnews.android.utils.openCustomTab
+import org.devnews.android.utils.setErrorState
+import org.devnews.android.utils.setProgressState
+import org.devnews.android.utils.setupRecyclerView
 import java.lang.IllegalStateException
 
 class TagActivity : Activity() {
@@ -41,20 +46,11 @@ class TagActivity : Activity() {
         binding = ActivityTagBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Setup toolbar
-        setSupportActionBar(binding.toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        setupToolbar(true)
 
         // Setup recycler and adapter
         val adapter = StoryAdapter(viewModel.items.value!!)
-        binding.storyList.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-        binding.storyList.adapter = adapter
-        binding.storyList.addItemDecoration(
-            DividerItemDecoration(
-                this,
-                DividerItemDecoration.VERTICAL
-            )
-        )
+        setupRecyclerView(binding.storyList, adapter, true)
 
         // --- Tag Details Setup ---
 
@@ -130,20 +126,22 @@ class TagActivity : Activity() {
         binding.swipeRefresh.setProgressBackgroundColorSchemeResource(R.color.secondaryColor)
         binding.swipeRefresh.setColorSchemeResources(R.color.secondaryTextColor)
 
-        // --- Loading/Progress Setup ---
-
-        // Update the progress bar status.
         viewModel.loading.observe(this) {
-            binding.progress.visibility = if (viewModel.items.value!!.isEmpty()) {
-                if (it) VISIBLE else GONE
-            } else {
-                GONE
-            }
-            // Also let SwipeRefresh know we aren't refreshing anymore.
-            if (!it) binding.swipeRefresh.isRefreshing = false
+            setProgressState(
+                it,
+                viewModel.error.value,
+                binding.progress,
+                binding.storyList,
+                binding.swipeRefresh
+            )
         }
-
-        // --- Kicking it off ---
+        viewModel.error.observe(this) {
+            if (viewModel.items.value!!.isNotEmpty() && it != null) {
+                Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
+            } else {
+                setErrorState(it, binding.error)
+            }
+        }
 
         // When activity is created, load stories.
         lifecycleScope.launchWhenCreated {

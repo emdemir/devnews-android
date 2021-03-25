@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.devnews.android.R
 import org.devnews.android.repository.objects.Comment
 import org.devnews.android.utils.dpToPx
+import org.devnews.android.utils.htmlToSpanned
 
 class CommentAdapter(private val comments: List<Comment>) :
     RecyclerView.Adapter<CommentAdapter.ViewHolder>() {
@@ -133,16 +134,7 @@ class CommentAdapter(private val comments: List<Comment>) :
 
             unread.visibility = if (comment.userRead == false) VISIBLE else GONE
 
-            // Render the comment content into HTML
-            val html = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Html.fromHtml(comment.commentHtml, FROM_HTML_MODE_COMPACT)
-            } else {
-                // We're already handling the deprecation case with the SDK version check.
-                @Suppress("DEPRECATION")
-                Html.fromHtml(comment.commentHtml)
-            }
-            val spannableHtml = SpannableString(html).trim()
-            content.setText(spannableHtml, TextView.BufferType.SPANNABLE)
+            content.setText(htmlToSpanned(comment.commentHtml), TextView.BufferType.SPANNABLE)
 
             // Set indent indicator
             val params = indentIndicator.layoutParams as ViewGroup.MarginLayoutParams

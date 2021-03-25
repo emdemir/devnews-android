@@ -36,6 +36,18 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center" />
 
+        <TextView
+            android:id="@+id/error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="16dp"
+            android:visibility="gone"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:textAlignment="center"
+            android:textColor="?attr/colorOnBackground"
+            app:drawableTopCompat="@android:drawable/ic_dialog_alert" />
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/create_message_fab"
             android:layout_width="wrap_content"

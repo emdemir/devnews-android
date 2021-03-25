@@ -61,10 +61,7 @@ class StoryCreateActivity : Activity() {
         binding.lifecycleOwner = this
         binding.viewmodel = viewModel
 
-        // Set the application toolbar
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        setupToolbar(true)
 
         // --- Validation Setup ---
 
@@ -160,16 +157,10 @@ class StoryCreateActivity : Activity() {
             finish()
         }
 
-        // --- Error Handling Setup ---
-
         viewModel.error.observe(this) {
             if (it == null) return@observe
 
             Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
-        }
-
-        viewModel.loading.observe(this) {
-            Log.d(TAG, "Loading status: $it")
         }
 
         // --- Kicking it off ---
@@ -178,15 +169,6 @@ class StoryCreateActivity : Activity() {
         lifecycleScope.launchWhenStarted {
             viewModel.loadTags(this@StoryCreateActivity)
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            // If the user presses the <- button, finish activity
-            android.R.id.home -> finish()
-        }
-
-        return super.onOptionsItemSelected(item)
     }
 
     companion object {

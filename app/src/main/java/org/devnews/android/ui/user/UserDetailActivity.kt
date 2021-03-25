@@ -11,12 +11,14 @@ import android.view.View.VISIBLE
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
+import com.squareup.picasso.Picasso
 import org.devnews.android.DevNews
 import org.devnews.android.R
 import org.devnews.android.base.Activity
 import org.devnews.android.databinding.ActivityUserDetailBinding
 import org.devnews.android.repository.objects.User
 import org.devnews.android.ui.home.HomeActivity
+import org.devnews.android.utils.setProgressState
 import java.lang.IllegalStateException
 
 class UserDetailActivity : Activity() {
@@ -33,15 +35,11 @@ class UserDetailActivity : Activity() {
         username = intent.getStringExtra(ARG_USERNAME)
             ?: throw IllegalStateException("UserDetailActivity was not sent the username!")
 
-        // --- View Setup ---
-
         // Setup view binding
         binding = ActivityUserDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Setup toolbar
-        setSupportActionBar(binding.toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        setupToolbar(true)
 
         // --- User Details Setup ---
 
@@ -50,24 +48,19 @@ class UserDetailActivity : Activity() {
             if (it == null) return@observe
 
             binding.user = it
+            // Load the profile picture of the avatar
+            Picasso.get().load(it.avatarImage).resize(80, 80).into(binding.userAvatar)
         }
 
-        // --- Progress Setup ---
-
-        // When loading is enabled, hide the user details and show the progress bar.
         viewModel.loading.observe(this) {
-            if (viewModel.error.value != null) {
-                binding.userDetailsContainer.visibility = GONE
-                binding.progress.visibility = GONE
-            } else {
-                binding.userDetailsContainer.visibility = if (it) GONE else VISIBLE
-                binding.progress.visibility = if (it) VISIBLE else GONE
-            }
+            setProgressState(
+                it,
+                viewModel.error.value,
+                binding.progress,
+                binding.userDetailsContainer
+            )
         }
 
-        // --- Error Handling Setup ---
-
-        // When an error is given, display it in the center.
         viewModel.error.observe(this) {
             binding.error = it
             // Conditionally display the options menu as well
@@ -78,8 +71,6 @@ class UserDetailActivity : Activity() {
                 binding.userDetailsContainer.visibility = GONE
             }
         }
-
-        // --- Kicking it off ---
 
         // When the activity is created, load the user data.
         lifecycleScope.launchWhenCreated {
@@ -97,8 +88,6 @@ class UserDetailActivity : Activity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            // If the user presses the <- button, finish activity
-            android.R.id.home -> finish()
             R.id.send_message -> {
                 HomeActivity.launchMessageComposer(this, username)
             }

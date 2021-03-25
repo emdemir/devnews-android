@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.devnews.android.R
 import org.devnews.android.repository.objects.Message
+import org.devnews.android.utils.htmlToSpanned
 
 class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val senderRecipient: TextView = itemView.findViewById(R.id.message_sender_recipient)
@@ -45,16 +46,7 @@ class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             DateUtils.MINUTE_IN_MILLIS
         )
 
-        // Render the message content into HTML
-        val html = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Html.fromHtml(message.messageHtml, Html.FROM_HTML_MODE_COMPACT)
-        } else {
-            // We're already handling the deprecation case with the SDK version check.
-            @Suppress("DEPRECATION")
-            Html.fromHtml(message.messageHtml)
-        }
-        val spannableHtml = SpannableString(html).trim()
-        content.setText(spannableHtml, TextView.BufferType.SPANNABLE)
+        content.setText(htmlToSpanned(message.messageHtml), TextView.BufferType.SPANNABLE)
 
         // If we are not in thread mode, then make the text larger and ellipsize it.
         if (!thread) {

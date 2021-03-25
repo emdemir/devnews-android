@@ -19,6 +19,9 @@ import org.devnews.android.base.Activity
 import org.devnews.android.base.CollectionViewModel
 import org.devnews.android.databinding.ActivityMessageThreadBinding
 import org.devnews.android.repository.adapters.MessageThreadAdapter
+import org.devnews.android.utils.setErrorState
+import org.devnews.android.utils.setProgressState
+import org.devnews.android.utils.setupRecyclerView
 import java.lang.IllegalStateException
 
 class MessageThreadActivity : Activity() {
@@ -41,21 +44,11 @@ class MessageThreadActivity : Activity() {
         binding = ActivityMessageThreadBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Setup toolbar
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        setupToolbar(true)
 
         // Setup recycler for the message thread
         val adapter = MessageThreadAdapter(viewModel.items.value!!)
-        binding.messageList.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-        binding.messageList.adapter = adapter
-        binding.messageList.addItemDecoration(
-            DividerItemDecoration(
-                this,
-                DividerItemDecoration.VERTICAL
-            )
-        )
+        setupRecyclerView(binding.messageList, adapter)
 
         // --- Message List Setup ---
 
@@ -104,14 +97,23 @@ class MessageThreadActivity : Activity() {
             if (!it) binding.swipeRefresh.isRefreshing = false
         }
 
-        // --- Error Setup ---
+        viewModel.loading.observe(this) {
+            setProgressState(
+                it,
+                viewModel.error.value,
+                binding.progress,
+                binding.messageList,
+                binding.swipeRefresh
+            )
+        }
 
         // If an error happens, show a Snackbar.
         viewModel.error.observe(this) {
-            if (it == null) return@observe
-
-            // TODO: show error in the middle of the screen if message thread is empty.
-            Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
+            if (viewModel.items.value!!.isNotEmpty() && it != null) {
+                Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
+            } else {
+                setErrorState(it, binding.error)
+            }
         }
 
         // --- Kicking it Off ---
@@ -121,15 +123,6 @@ class MessageThreadActivity : Activity() {
             viewModel.setThreadID(threadID)
             viewModel.loadThread(this@MessageThreadActivity)
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            // If the user presses the <- button, finish activity
-            android.R.id.home -> finish()
-        }
-
-        return super.onOptionsItemSelected(item)
     }
 
     companion object {

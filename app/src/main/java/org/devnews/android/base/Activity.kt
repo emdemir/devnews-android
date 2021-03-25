@@ -2,8 +2,11 @@ package org.devnews.android.base
 
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import org.devnews.android.DevNews
+import org.devnews.android.R
 
 /**
  * This class is used to cover the fact that Android (as of API 30) still doesn't have a way to
@@ -29,5 +32,21 @@ open class Activity : AppCompatActivity() {
         }
 
         super.onDestroy()
+    }
+
+    protected fun setupToolbar(enableBack: Boolean = false) {
+        // Set the application toolbar
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(enableBack)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            // If the user presses the <- button, finish activity
+            android.R.id.home -> finish()
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 }

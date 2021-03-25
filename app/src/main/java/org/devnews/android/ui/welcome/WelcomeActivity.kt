@@ -45,9 +45,7 @@ class WelcomeActivity : Activity() {
         binding = ActivityWelcomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Set the application toolbar
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        setupToolbar()
 
         // Setup Android Navigation
         val navHostFragment =
