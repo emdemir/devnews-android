@@ -15,7 +15,7 @@ data class Comment(
     var score: Int,
     val username: String?,
     @SerializedName("user_voted") var userVoted: Boolean?,
-    val read: Boolean?,
+    @SerializedName("user_read") val userRead: Boolean?,
 
     var children: ArrayList<Comment>?,
 

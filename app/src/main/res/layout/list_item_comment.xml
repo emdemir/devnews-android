@@ -5,7 +5,7 @@
     android:id="@+id/comment_list_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:showIn="@layout/activity_story"
+    tools:showIn="@layout/activity_story_details"
     android:orientation="horizontal">
 
     <View
@@ -52,11 +52,26 @@
             app:layout_constraintStart_toEndOf="@+id/score_text"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/comment_byline"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="3 hours ago by admin" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/comment_byline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3 hours ago by admin" />
+
+                <TextView
+                    android:id="@+id/comment_unread"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/comment_unread"
+                    android:layout_marginStart="4dp"
+                    android:textColor="?attr/colorOnBackground"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/comment_content"

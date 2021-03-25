@@ -77,4 +77,22 @@
     <string name="user_detail_about">About:</string>
     <string name="user_avatar">User avatar</string>
     <string name="error_user_not_found">The user wasn\'t found. The account may have been disabled or removed by a moderator.</string>
+    <string name="story_title_hint">Story title</string>
+    <string name="story_title_helper">Please do not editorialize titles.</string>
+    <string name="story_url_hint">Story URL</string>
+    <string name="url_or_title">…or…</string>
+    <string name="story_text_hint">Story text</string>
+    <string name="story_tags_hint">Tags</string>
+    <string name="story_create_rules_reminder">If you haven\'t, would you mind taking a look at our rules?</string>
+    <string name="story_tags_helper">Select between 1 to 3 tags. Please use the appropriate tags.</string>
+    <string name="create_story_fab">Submit Story</string>
+    <string name="title_activity_story_create">Submit Story</string>
+    <string name="story_create_title_empty">Title cannot be empty.</string>
+    <string name="story_create_url_spaces">URL may not contain spaces.</string>
+    <string name="story_create_no_url_or_text">You must either add a URL or text.</string>
+    <string name="story_create_both_url_and_text">You can only have a URL or text.</string>
+    <string name="story_create_tags_minimum">You must select at least one tag.</string>
+    <string name="story_create_tags_maximum">You cannot add more than 3 tags.</string>
+    <string name="story_create_is_authored">I am the author of this content</string>
+    <string name="comment_unread">(unread)</string>
 </resources>

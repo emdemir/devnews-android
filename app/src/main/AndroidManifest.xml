@@ -45,7 +45,7 @@
             android:label="@string/add_account_activity"
             android:theme="@style/Theme.DevNews.NoActionBar" />
 
-        <activity android:name="org.devnews.android.ui.story.StoryActivity"
+        <activity android:name="org.devnews.android.ui.story.details.StoryDetailsActivity"
             android:label="@string/title_activity_story"
             android:theme="@style/Theme.DevNews.NoActionBar" />
 
@@ -60,6 +60,11 @@
         <activity android:name="org.devnews.android.ui.user.UserDetailActivity"
             android:label="@string/title_activity_user_detail"
             android:theme="@style/Theme.DevNews.NoActionBar" />
+
+        <activity android:name="org.devnews.android.ui.story.create.StoryCreateActivity"
+            android:label="@string/title_activity_story_create"
+            android:theme="@style/Theme.DevNews.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
 
         <service android:name=".account.AccountService"
             android:exported="false">

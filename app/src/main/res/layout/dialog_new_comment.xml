@@ -5,7 +5,7 @@
     android:id="@+id/dialog_new_comment"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:showIn="@layout/activity_story"
+    tools:showIn="@layout/activity_story_details"
     android:elevation="4dp">
 
     <View

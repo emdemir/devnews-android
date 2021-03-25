@@ -16,6 +16,7 @@ import org.devnews.android.DevNews
 import org.devnews.android.R
 import org.devnews.android.databinding.FragmentHomeBinding
 import org.devnews.android.repository.adapters.StoryAdapter
+import org.devnews.android.ui.story.create.StoryCreateActivity.Companion.launchStoryCreate
 import org.devnews.android.ui.story.details.StoryDetailsActivity.Companion.launchStoryDetails
 import org.devnews.android.ui.tag.TagActivity.Companion.launchTagActivity
 import org.devnews.android.utils.openCustomTab
@@ -75,6 +76,13 @@ class HomeFragment : Fragment() {
             viewModel.notifyAdapter(adapter)
         }
 
+        // --- Create More Setup ---
+
+        // When the "Create More" button is clicked, start the StoryCreateActivity.
+        binding.createStoryFab.setOnClickListener {
+            launchStoryCreate(requireContext())
+        }
+
         // --- Load More Setup ---
 
         // When the adapter notifies us that the user has reached the end of the page, load more
@@ -103,12 +111,14 @@ class HomeFragment : Fragment() {
         // Show/hide progress bar based on the loading value, but only if we don't have any stories
         // yet.
         viewModel.loading.observe(viewLifecycleOwner) {
-            binding.progress.visibility =
-                if (viewModel.items.value!!.isEmpty() && !binding.swipeRefresh.isRefreshing) {
-                    if (it) VISIBLE else GONE
-                } else {
-                    GONE
-                }
+            if (viewModel.items.value!!.isEmpty() && !binding.swipeRefresh.isRefreshing) {
+                binding.progress.visibility = if (it) VISIBLE else GONE
+                binding.storyList.visibility = if (it) GONE else VISIBLE
+            } else {
+                binding.progress.visibility = GONE
+                binding.storyList.visibility = VISIBLE
+            }
+
             // Also let SwipeRefresh know we aren't refreshing anymore.
             if (!it) binding.swipeRefresh.isRefreshing = false
         }

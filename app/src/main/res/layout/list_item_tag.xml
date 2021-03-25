@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/list_item_tag"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/tag_name"
+        style="@style/ThemeOverlay.DevNews.TextAppearance.Medium"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".40"
+        android:text="programming" />
+
+    <TextView
+        android:id="@+id/tag_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".60"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textAlignment="viewEnd"
+        android:text="Stories about programming and development related things" />
+
+</LinearLayout>

@@ -5,6 +5,7 @@ import org.devnews.android.repository.*
 import org.devnews.android.ui.home.home.HomeViewModel
 import org.devnews.android.ui.home.messages.MessageListViewModel
 import org.devnews.android.ui.message.thread.MessageThreadViewModel
+import org.devnews.android.ui.story.create.StoryCreateViewModel
 import org.devnews.android.ui.story.details.StoryDetailsViewModel
 import org.devnews.android.ui.tag.TagViewModel
 import org.devnews.android.ui.user.UserDetailViewModel
@@ -19,7 +20,7 @@ class AppContainer(application: DevNews) {
 
     // Main retrofit instance
     private val retrofit = Retrofit.Builder()
-        .baseUrl("http://192.168.0.4:8081")
+        .baseUrl("https://api.devnews.emdemir.com")
         .addConverterFactory(GsonConverterFactory.create())
         .client(OkHttpClient.Builder()
             .addInterceptor(TokenInterceptor(application))
@@ -68,5 +69,8 @@ class AppContainer(application: DevNews) {
     }
     val userDetailViewModelFactory = ViewModelFactory<UserDetailViewModel> {
         UserDetailViewModel(userRepository)
+    }
+    val storyCreateViewModelFactory = ViewModelFactory<StoryCreateViewModel> {
+        StoryCreateViewModel(tagRepository, storyRepository)
     }
 }

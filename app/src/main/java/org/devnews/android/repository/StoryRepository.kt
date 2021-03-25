@@ -14,4 +14,12 @@ class StoryRepository(private val storyService: StoryService) {
      * @param shortURL The short URL of the story
      */
     suspend fun voteOnStory(shortURL: String) = storyService.voteOnStory(shortURL)
+
+    /**
+     * Create a new story with the given parameters.
+     *
+     * @param storyData Parameters for the story.
+     */
+    suspend fun createStory(storyData: StoryService.StoryCreate) =
+        storyService.createStory(storyData)
 }

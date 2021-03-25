@@ -26,7 +26,7 @@ import org.devnews.android.DevNews
 import org.devnews.android.R
 import org.devnews.android.repository.adapters.CommentAdapter
 import org.devnews.android.base.Activity
-import org.devnews.android.databinding.ActivityStoryBinding
+import org.devnews.android.databinding.ActivityStoryDetailsBinding
 import org.devnews.android.repository.adapters.StoryAdapter
 import org.devnews.android.ui.story.details.commenting.CreateCommentDialogFragment
 import org.devnews.android.ui.story.details.commenting.CreateCommentDialogFragment.Companion.CREATE_COMMENT_REQUEST
@@ -39,7 +39,7 @@ class StoryDetailsActivity : Activity() {
     private val viewModel: StoryDetailsViewModel by viewModels(factoryProducer = {
         (application as DevNews).container.storyViewModelFactory
     })
-    private lateinit var binding: ActivityStoryBinding
+    private lateinit var binding: ActivityStoryDetailsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +51,7 @@ class StoryDetailsActivity : Activity() {
         // --- View Setup ---
 
         // Setup binding and content view
-        binding = ActivityStoryBinding.inflate(layoutInflater)
+        binding = ActivityStoryDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // Setup toolbar

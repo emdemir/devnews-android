@@ -14,6 +14,10 @@ interface TagService {
         @Query("page") page: Int = 1
     ): StoriesWithTagResponse
 
+    @GET("/t/")
+    suspend fun getAllTags(): AllTagsResponse
+
+    data class AllTagsResponse(val tags: List<Tag>)
     data class StoriesWithTagResponse(
         val tag: Tag,
         val stories: List<Story>,

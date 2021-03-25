@@ -8,6 +8,8 @@ import android.text.format.DateUtils
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
@@ -66,6 +68,7 @@ class CommentAdapter(private val comments: List<Comment>) :
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val score: TextView = itemView.findViewById(R.id.score_text)
         private val byline: TextView = itemView.findViewById(R.id.comment_byline)
+        private val unread: TextView = itemView.findViewById(R.id.comment_unread)
         private val content: TextView = itemView.findViewById(R.id.comment_content)
         private val indentIndicator: View = itemView.findViewById(R.id.indent_indicator)
         private val replyButton: Button = itemView.findViewById(R.id.reply_button)
@@ -127,6 +130,8 @@ class CommentAdapter(private val comments: List<Comment>) :
                 DateUtils.MINUTE_IN_MILLIS
             )
             byline.text = itemView.context.getString(R.string.byline, span, comment.username)
+
+            unread.visibility = if (comment.userRead == false) VISIBLE else GONE
 
             // Render the comment content into HTML
             val html = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
