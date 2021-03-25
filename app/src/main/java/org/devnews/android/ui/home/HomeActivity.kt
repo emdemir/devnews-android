@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Message
+import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
@@ -103,6 +104,12 @@ class HomeActivity : Activity() {
                 }
             )
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // The base Activity class we use has its own idea of managing the back button which we
+        // don't want.
+        return false
     }
 
     override fun onSupportNavigateUp(): Boolean {
