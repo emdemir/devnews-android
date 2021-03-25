@@ -1,9 +1,11 @@
 package org.devnews.android.ui.home
 
+import android.accounts.AccountManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Message
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
@@ -13,8 +15,10 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.auth0.android.jwt.JWT
 import com.google.android.material.navigation.NavigationView
 import org.devnews.android.R
+import org.devnews.android.account.getAccountDetails
 import org.devnews.android.base.Activity
 import org.devnews.android.databinding.ActivityMainBinding
 import org.devnews.android.ui.home.messages.MessageListFragment
@@ -50,6 +54,30 @@ class HomeActivity : Activity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        // Load the user's details from the identity token, and fill up the sidebar with information
+        loadUserDetails()
+    }
+
+    private fun loadUserDetails() {
+        val obtainDetailsTask = Thread {
+            // Fetch the Identity Token
+            val accountDetails = getAccountDetails(this)
+            val identityToken = accountDetails.getString(AccountManager.KEY_AUTHTOKEN)
+                ?: return@Thread
+            val jwt = JWT(identityToken)
+
+            // Fill in the sidebar details
+            runOnUiThread {
+                val username: TextView = findViewById(R.id.user_username)
+                val email: TextView = findViewById(R.id.user_email)
+
+                username.text = jwt.subject
+                email.text = jwt.getClaim("email").asString()
+            }
+        }
+
+        obtainDetailsTask.start()
     }
 
     override fun onNewIntent(intent: Intent?) {
