@@ -79,6 +79,8 @@ class TokenInterceptor(private val application: DevNews) : Interceptor {
                         throw APIError(error)
                     }
 
+                    Log.d(TAG, "tEST $response")
+
                     // Get the token
                     val tok = response.getString(AccountManager.KEY_AUTHTOKEN)
                         ?: throw IllegalStateException("No error but token is missing?!")

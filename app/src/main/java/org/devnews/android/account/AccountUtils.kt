@@ -1,29 +1,37 @@
 package org.devnews.android.account
 
 import android.accounts.Account
-import android.accounts.AccountAuthenticatorResponse
 import android.accounts.AccountManager
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.core.os.bundleOf
-import org.devnews.android.R
 
 /**
- * Adds a new account to Android's AccountManager.
+ * Adds a new DevNews account to Android's AccountManager.
  * The account type will always be {@link DevNewsAuthenticator.ACCOUNT_TYPE}.
  *
  * @param context The application/activity context
  * @param username The account username
  * @param password The password for the account
+ * @param source The source of the account.
  * @param token Optional, sets the access token if given
  */
-fun addAccount(context: Context, username: String, password: String, token: String? = null) {
+fun addAccount(
+    context: Context,
+    username: String,
+    password: String,
+    source: String = DevNewsAuthenticator.ACCOUNT_SOURCE_LOCAL,
+    token: String? = null
+) {
     val manager = AccountManager.get(context)
     val account = Account(username, DevNewsAuthenticator.ACCOUNT_TYPE)
 
-    manager.addAccountExplicitly(account, password, bundleOf())
+    manager.addAccountExplicitly(
+        account, password, bundleOf(
+            DevNewsAuthenticator.KEY_ACCOUNT_SOURCE to source
+        )
+    )
     if (token != null)
         manager.setAuthToken(account, DevNewsAuthenticator.AUTHTOKEN_ACCESS, token)
 }
@@ -37,10 +45,11 @@ fun addAccount(context: Context, username: String, password: String, token: Stri
  * @param password The password for the account
  * @param token Optional, sets the access token if given
  * @param initialUsername if set, and doesn't match username, will update account name
+ * @param newSource if set, will update the account source
  */
 fun updateAccount(
     context: Context, username: String, password: String, token: String? = null,
-    initialUsername: String? = null
+    initialUsername: String? = null, newSource: String? = null
 ) {
     val manager = AccountManager.get(context)
     var account = Account(username, DevNewsAuthenticator.ACCOUNT_TYPE)
@@ -52,6 +61,10 @@ fun updateAccount(
             null,
             null
         ).result
+    }
+
+    if (newSource != null) {
+        manager.setUserData(account, DevNewsAuthenticator.KEY_ACCOUNT_SOURCE, newSource)
     }
 
     manager.setPassword(account, password)

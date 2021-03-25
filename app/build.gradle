@@ -6,6 +6,14 @@ plugins {
     id "androidx.navigation.safeargs.kotlin"
 }
 
+def secretsProperties = new Properties()
+try {
+    def secretsFile = rootProject.file("secrets.properties")
+    secretsProperties.load(new FileInputStream(secretsFile))
+} catch (ignored) {
+    throw IllegalStateException("You must configure secrets.properties before building DevNews.")
+}
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -18,6 +26,9 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "OAUTH_CLIENT_ID", "\"${secretsProperties["oauth_client_id"]}\"")
+        buildConfigField("String", "HOMESERVER", "\"${secretsProperties["homeserver"]}\"")
     }
 
     buildTypes {
@@ -49,17 +60,17 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.3.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
     // getBindingAdapter() is currently not stable, and is required in MessageAdapter.
-    implementation 'androidx.recyclerview:recyclerview:1.2.0-beta02'
+    implementation 'androidx.recyclerview:recyclerview:1.2.0-rc01'
 
     // Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
     // Used for FragmentManager.commit and friends (Kotlin extensions)
-    implementation "androidx.fragment:fragment-ktx:1.3.1"
+    implementation "androidx.fragment:fragment-ktx:1.3.2"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     // Network connectivity
@@ -70,6 +81,9 @@ dependencies {
 
     // Opening URLs in a custom tab
     implementation "androidx.browser:browser:1.3.0"
+
+    // Evilcorp Sign-in
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

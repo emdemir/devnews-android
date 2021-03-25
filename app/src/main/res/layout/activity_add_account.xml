@@ -24,7 +24,7 @@
          every month. -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/add_account_fragment_container"
-        android:name="org.devnews.android.welcome.LoginFragment"
+        android:name="org.devnews.android.ui.welcome.LoginFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />

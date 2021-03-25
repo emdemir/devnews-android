@@ -9,13 +9,19 @@ class AuthRepository(private val authService: AuthService) {
      *
      * @param username The username of the user
      * @param password The password of the user
+     * @param source The account source
      */
-    suspend fun getAccessToken(username: String, password: String): AuthService.AuthResponse {
+    suspend fun getAccessToken(
+        username: String,
+        password: String,
+        source: String
+    ): AuthService.AuthResponse {
         Log.d(TAG, "getAccessToken() username: $username")
         return authService.getAccessToken(
             AuthService.LoginParams(username, password),
             "openid",
-            "code"
+            "code",
+            source
         )
     }
 

@@ -14,7 +14,8 @@ interface AuthService {
     suspend fun getAccessToken(
         @Body params: LoginParams,
         @Query("scope") scope: String,
-        @Query("response_type") responseType: String
+        @Query("response_type") responseType: String,
+        @Query("source") source: String
     ): AuthResponse
 
     @POST("/auth/refresh")

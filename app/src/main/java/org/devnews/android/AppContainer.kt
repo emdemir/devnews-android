@@ -20,7 +20,7 @@ class AppContainer(application: DevNews) {
 
     // Main retrofit instance
     private val retrofit = Retrofit.Builder()
-        .baseUrl("https://api.devnews.emdemir.com")
+        .baseUrl(BuildConfig.HOMESERVER)
         .addConverterFactory(GsonConverterFactory.create())
         .client(OkHttpClient.Builder()
             .addInterceptor(TokenInterceptor(application))

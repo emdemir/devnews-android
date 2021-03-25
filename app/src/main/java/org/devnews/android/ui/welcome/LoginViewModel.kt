@@ -6,19 +6,23 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import kotlinx.coroutines.launch
 import org.devnews.android.R
+import org.devnews.android.account.DevNewsAuthenticator
 import org.devnews.android.base.ViewModel
 import org.devnews.android.repository.AuthRepository
 import org.devnews.android.repository.getError
 import org.devnews.android.repository.wrapAPIError
 import retrofit2.HttpException
+import java.util.*
 
 class LoginViewModel constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
     private val _loggedIn = MutableLiveData(false)
     private val _token = MutableLiveData<String?>()
+    private val _source = MutableLiveData(DevNewsAuthenticator.ACCOUNT_SOURCE_LOCAL)
 
     // Two way data binding with layout
     val username = MutableLiveData("")
@@ -27,6 +31,7 @@ class LoginViewModel constructor(
     // Read-only live data
     val loggedIn: LiveData<Boolean> = _loggedIn
     val token: LiveData<String?> = _token
+    val source: LiveData<String> = _source
 
     /**
      * Validates the value of the username, and returns a string resource as error if it fails
@@ -74,7 +79,11 @@ class LoginViewModel constructor(
                     else -> null
                 }
             }) {
-                val authResponse = authRepository.getAccessToken(username.value!!, password.value!!)
+                _source.value = DevNewsAuthenticator.ACCOUNT_SOURCE_LOCAL
+                val authResponse =
+                    authRepository.getAccessToken(username.value!!, password.value!!,
+                        _source.value!!
+                    )
                 Log.d(TAG, "Login success")
 
                 _token.value = authResponse.accessToken
@@ -83,6 +92,21 @@ class LoginViewModel constructor(
 
             _loading.value = false
         }
+    }
+
+    /**
+     * Logs the user in via Google Sign-In.
+     */
+    fun loginWithGoogle(context: Context, account: GoogleSignInAccount) {
+        // There's no token when we get a Google login response. We use the "password" field to
+        // store the identity token. The access token will be properly fetched during the initial
+        // load with the account set up.
+
+        // This doesn't matter because we will get back the username via the identity token anyhow.
+        username.value = "googleuser"
+        password.value = account.serverAuthCode
+        _source.value = DevNewsAuthenticator.ACCOUNT_SOURCE_GOOGLE
+        _loggedIn.value = true
     }
 
     companion object {

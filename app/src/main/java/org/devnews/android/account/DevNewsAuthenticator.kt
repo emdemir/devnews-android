@@ -25,6 +25,13 @@ class DevNewsAuthenticator(private val context: Context) : AbstractAccountAuthen
         const val AUTHTOKEN_ACCESS = "access"
         const val AUTHTOKEN_REFRESH = "refresh"
         const val AUTHTOKEN_IDENTITY = "identity"
+
+        // Who is the originator of this account? google: Google Sign-in, local: Regular DevNews
+        // account (no 3rd-party).
+        const val KEY_ACCOUNT_SOURCE = "ACCOUNT_SOURCE"
+        const val ACCOUNT_SOURCE_GOOGLE = "google"
+        const val ACCOUNT_SOURCE_LOCAL = "devnews"
+
         private const val TAG = "DevNewsAuthenticator"
     }
 
@@ -66,11 +73,15 @@ class DevNewsAuthenticator(private val context: Context) : AbstractAccountAuthen
         // If we were able to successfully fetch with the refresh token, exit.
         if (token != null) return token
 
+        // Okay, time to try to re-authenticate. Use the token/password given to us by the user
+        // (or the 3rd party authenticator) with the server.
+        val source = manager.getUserData(account, KEY_ACCOUNT_SOURCE)
+            ?: throw IllegalStateException("Didn't get account source?!")
         val password = manager.getPassword(account)
         if (password != null) {
             Log.d(TAG, "Getting access token from server...")
             try {
-                val authResponse = repo.getAccessToken(account.name, password)
+                val authResponse = repo.getAccessToken(account.name, password, source)
                 if (authResponse.accessToken == null)
                     throw IllegalStateException("Didn't get access token?!")
 
@@ -137,6 +148,23 @@ class DevNewsAuthenticator(private val context: Context) : AbstractAccountAuthen
                             Log.d(TAG, "Got the identity token!")
                             manager.setAuthToken(account, AUTHTOKEN_IDENTITY, token)
                             token = authResponse.identityToken
+
+                            // Check if the username of the account that's saved on the device matches
+                            // the one that was sent back to us.
+                            val tokenJWT = JWT(authResponse.identityToken)
+                            if (tokenJWT.subject != account.name) {
+                                Log.d(
+                                    TAG,
+                                    "Updating the account name with the one from the server."
+                                )
+                                updateAccount(
+                                    context,
+                                    tokenJWT.subject!!,
+                                    manager.getPassword(account),
+                                    accessToken,
+                                    account.name
+                                )
+                            }
                         } catch (e: HttpException) {
                             Log.w(
                                 TAG,

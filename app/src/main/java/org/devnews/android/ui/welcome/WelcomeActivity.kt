@@ -87,7 +87,13 @@ class WelcomeActivity : Activity() {
      * @param token If a token was obtained, save it with the account to avoid a round-trip
      */
     private fun addAccountAndGoHome(username: String, password: String, token: String?) {
-        addAccount(this, username, password, token)
+        addAccount(
+            this,
+            username,
+            password,
+            source = loginViewModel.source.value!!,
+            token = token
+        )
 
         Log.d(TAG, "Authentication complete! Sending user to home")
         val sendOff = Intent(this, HomeActivity::class.java)
