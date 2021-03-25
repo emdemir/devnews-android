@@ -12,10 +12,7 @@ import org.devnews.android.R
 import org.devnews.android.account.DevNewsAuthenticator
 import org.devnews.android.base.ViewModel
 import org.devnews.android.repository.AuthRepository
-import org.devnews.android.repository.getError
 import org.devnews.android.repository.wrapAPIError
-import retrofit2.HttpException
-import java.util.*
 
 class LoginViewModel constructor(
     private val authRepository: AuthRepository
@@ -97,7 +94,7 @@ class LoginViewModel constructor(
     /**
      * Logs the user in via Google Sign-In.
      */
-    fun loginWithGoogle(context: Context, account: GoogleSignInAccount) {
+    fun loginWithGoogle(account: GoogleSignInAccount) {
         // There's no token when we get a Google login response. We use the "password" field to
         // store the identity token. The access token will be properly fetched during the initial
         // load with the account set up.

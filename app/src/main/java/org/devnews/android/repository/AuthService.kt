@@ -24,14 +24,23 @@ interface AuthService {
     @POST("/auth/token")
     suspend fun getIdentityToken(@Body params: TokenParams): AuthResponse
 
+    @POST("/auth/register")
+    suspend fun registerUser(@Body params: RegisterParams): AuthResponse
+
     /**
      * Request data for fetching the access token.
      */
     data class LoginParams(val username: String, val password: String)
+
     /**
      * Request data for fetching the identity token.
      */
     data class TokenParams(@SerializedName("grant_type") val grantType: String, val code: String)
+
+    /**
+     * Request data for registering a new DevNews user.
+     */
+    data class RegisterParams(val username: String, val password: String, val email: String)
 
     /**
      * Response data for token-related requests.

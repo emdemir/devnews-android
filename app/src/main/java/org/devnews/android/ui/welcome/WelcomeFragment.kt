@@ -23,6 +23,11 @@ class WelcomeFragment : Fragment() {
             val action = WelcomeFragmentDirections.actionWelcomeToLogin()
             findNavController().navigate(action)
         }
+        // Register button -> register fragment
+        binding.welcomeRegister.setOnClickListener {
+            val action = WelcomeFragmentDirections.actionWelcomeToRegister()
+            findNavController().navigate(action)
+        }
 
         return binding.root
     }

@@ -95,4 +95,19 @@
     <string name="story_create_tags_maximum">You cannot add more than 3 tags.</string>
     <string name="story_create_is_authored">I am the author of this content</string>
     <string name="comment_unread">(unread)</string>
+    <string name="register_username_helper">Must be unique, and 32 characters at most.</string>
+    <string name="login_username_helper">Use your devnews.org username.</string>
+    <string name="email">E-mail address</string>
+    <string name="register_email_helper">We won\'t spam you. Used for password resets.</string>
+    <string name="register_password_helper">Minimum 8 characters. Use a memorable password.</string>
+    <string name="verify_password">Verify password</string>
+    <string name="register_problems">Problems registering? Contact us!</string>
+    <string name="register_username_empty">Username cannot be empty.</string>
+    <string name="register_email_invalid">You must enter a valid e-mail address.</string>
+    <string name="register_email_empty">E-mail address cannot be empty.</string>
+    <string name="register_password_minimum">Password must be a minimum of 8 characters.</string>
+    <string name="register_password_empty">Password cannot be empty.</string>
+    <string name="register_verify_match">Passwords don\'t match.</string>
+    <string name="fragment_login">Login</string>
+    <string name="fragment_register">Register</string>
 </resources>

@@ -8,14 +8,22 @@
     <fragment
         android:id="@+id/nav_welcome"
         android:name="org.devnews.android.ui.welcome.WelcomeFragment"
-        android:label="DevNews">
+        android:label="@string/app_name">
         <action
             android:id="@+id/action_welcome_to_login"
             app:destination="@id/nav_login" />
+        <action
+            android:id="@+id/action_welcome_to_register"
+            app:destination="@id/nav_register" />
     </fragment>
     <fragment
         android:id="@+id/nav_login"
         android:name="org.devnews.android.ui.welcome.LoginFragment"
-        android:label="Login"
+        android:label="@string/fragment_login"
         tools:layout="@layout/fragment_login" />
+    <fragment
+        android:id="@+id/nav_register"
+        android:name="org.devnews.android.ui.welcome.RegisterFragment"
+        android:label="@string/fragment_register"
+        tools:layout="@layout/fragment_register" />
 </navigation>

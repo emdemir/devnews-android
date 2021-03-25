@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -78,6 +77,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
     /**
      * Attempt to sign in the user via Google.
      */
+    @Suppress("DEPRECATION")
     private fun signInWithGoogle() {
         val signInIntent = gsiClient.signInIntent
 
@@ -87,6 +87,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
 
+    @Suppress("DEPRECATION")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -96,7 +97,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
                     val account = GoogleSignIn.getSignedInAccountFromIntent(data)
                         .getResult(ApiException::class.java)
                     // :^)
-                    viewModel.loginWithGoogle(requireContext(), account!!)
+                    viewModel.loginWithGoogle(account!!)
                 } catch (e: ApiException) {
                     // :^(
                     Log.e(TAG, "Got an API exception while trying to get the Google account!!! ${e.statusCode}")

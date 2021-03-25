@@ -106,7 +106,7 @@ class TokenInterceptor(private val application: DevNews) : Interceptor {
         Log.d(TAG, "Continuing with the new request")
 
         // We can guarantee that we didn't use an expired token with the stuff above,
-        // so no need to check for 401. (watch this bite me in the bum in a week)
+        // so no need to check for 401.
         return chain.proceed(newReq)
     }
 }

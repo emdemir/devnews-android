@@ -42,10 +42,21 @@ class AuthRepository(private val authService: AuthService) {
      */
     suspend fun getIdentityToken(token: String): AuthService.AuthResponse {
         Log.d(TAG, "getIdentityToken()")
-        return authService.getIdentityToken(AuthService.TokenParams(
-            grantType = "authorization_code",
-            code = token
-        ))
+        return authService.getIdentityToken(
+            AuthService.TokenParams(
+                grantType = "authorization_code",
+                code = token
+            )
+        )
+    }
+
+    suspend fun registerUser(
+        username: String,
+        password: String,
+        email: String
+    ): AuthService.AuthResponse {
+        Log.d(TAG, "registerUser()")
+        return authService.registerUser(AuthService.RegisterParams(username, password, email))
     }
 
     companion object {
