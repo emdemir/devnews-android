@@ -16,6 +16,7 @@ data class Comment(
     val username: String?,
     @SerializedName("user_voted") var userVoted: Boolean?,
     @SerializedName("user_read") val userRead: Boolean?,
+    @SerializedName("story_url") val storyURL: String?,
 
     var children: ArrayList<Comment>?,
 

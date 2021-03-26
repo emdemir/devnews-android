@@ -2,8 +2,10 @@ package org.devnews.android
 
 import okhttp3.OkHttpClient
 import org.devnews.android.repository.*
+import org.devnews.android.ui.home.comments.NewestCommentsViewModel
 import org.devnews.android.ui.home.home.HomeViewModel
 import org.devnews.android.ui.home.messages.MessageListViewModel
+import org.devnews.android.ui.home.recent.RecentViewModel
 import org.devnews.android.ui.message.thread.MessageThreadViewModel
 import org.devnews.android.ui.story.create.StoryCreateViewModel
 import org.devnews.android.ui.story.details.StoryDetailsViewModel
@@ -54,6 +56,12 @@ class AppContainer(application: DevNews) {
     }
     val homeViewModelFactory = ViewModelFactory<HomeViewModel> {
         HomeViewModel(indexRepository, storyRepository)
+    }
+    val recentViewModelFactory = ViewModelFactory<RecentViewModel> {
+        RecentViewModel(indexRepository, storyRepository)
+    }
+    val newestCommentsViewModelFactory = ViewModelFactory<NewestCommentsViewModel> {
+        NewestCommentsViewModel(indexRepository, commentRepository)
     }
     val storyViewModelFactory = ViewModelFactory<StoryDetailsViewModel> {
         StoryDetailsViewModel(storyRepository, commentRepository)

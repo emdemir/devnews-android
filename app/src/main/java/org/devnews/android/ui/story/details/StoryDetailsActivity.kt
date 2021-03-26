@@ -133,7 +133,7 @@ class StoryDetailsActivity : Activity() {
         }
         // When the username is clicked, launch the user details.
         adapter.setOnUsernameClickListener {
-            launchUserDetails(this, it)
+            launchUserDetails(this, it.username!!)
         }
 
         viewModel.loading.observe(this) {

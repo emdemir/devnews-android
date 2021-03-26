@@ -1,65 +1,53 @@
-package org.devnews.android.ui.home.home
+package org.devnews.android.ui.home.comments
 
 import android.os.Bundle
-import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import org.devnews.android.DevNews
 import org.devnews.android.R
-import org.devnews.android.databinding.FragmentHomeBinding
-import org.devnews.android.repository.adapters.StoryAdapter
-import org.devnews.android.ui.story.create.StoryCreateActivity.Companion.launchStoryCreate
+import org.devnews.android.databinding.FragmentNewestCommentsBinding
+import org.devnews.android.repository.adapters.CommentAdapter
 import org.devnews.android.ui.story.details.StoryDetailsActivity.Companion.launchStoryDetails
-import org.devnews.android.ui.tag.TagActivity.Companion.launchTagActivity
-import org.devnews.android.utils.openCustomTab
 import org.devnews.android.utils.setErrorState
 import org.devnews.android.utils.setProgressState
 import org.devnews.android.utils.setupRecyclerView
 
-class HomeFragment : Fragment() {
-
-    private val viewModel: HomeViewModel by activityViewModels {
-        (requireActivity().application as DevNews).container.homeViewModelFactory
+class NewestCommentsFragment : Fragment() {
+    private val viewModel: NewestCommentsViewModel by activityViewModels {
+        (requireActivity().application as DevNews).container.newestCommentsViewModelFactory
     }
-    private lateinit var binding: FragmentHomeBinding
+    private lateinit var binding: FragmentNewestCommentsBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        binding = FragmentNewestCommentsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        // --- Story List Setup ---
+        // --- Comment List Setup ---
 
-        // Load the stories and adjust the RecyclerView
-        val adapter = StoryAdapter(viewModel.items.value!!)
-        setupRecyclerView(binding.storyList, adapter, true)
+        val adapter = CommentAdapter(viewModel.items.value!!)
+        adapter.setShowReplyButtons(false)
+        setupRecyclerView(binding.commentList, adapter, true)
 
         // Setup the event handlers for each interaction
-        adapter.setUpvoteClickListener {
-            viewModel.voteOnStory(requireContext(), it)
+
+        // When the upvote button is pressed, vote on the comment.
+        adapter.setOnUpvoteListener {
+            viewModel.voteOnComment(requireContext(), it)
         }
-        adapter.setDetailsClickListener { url, storyType ->
-            val context = requireContext()
-            if (storyType == StoryAdapter.StoryType.URL) {
-                openCustomTab(context, url)
-            } else {
-                launchStoryDetails(context, url)
-            }
-        }
-        adapter.setCommentsClickListener {
-            launchStoryDetails(requireContext(), it)
-        }
-        adapter.setTagClickListener {
-            Log.d(TAG, "Clicked tag: $it")
-            launchTagActivity(requireContext(), it)
+        // When the username is clicked, launch the user details.
+        adapter.setOnUsernameClickListener {
+            launchStoryDetails(requireContext(), it.storyURL!!)
         }
 
         // When the ViewModel notifies us that an operation was done, pass the adapter to the
@@ -67,13 +55,6 @@ class HomeFragment : Fragment() {
         viewModel.operation.observe(viewLifecycleOwner) {
             if (it == null) return@observe
             viewModel.notifyAdapter(adapter)
-        }
-
-        // --- Create Story Setup ---
-
-        // When the "Create Story" button is clicked, start the StoryCreateActivity.
-        binding.createStoryFab.setOnClickListener {
-            launchStoryCreate(requireContext())
         }
 
         // --- Load More Setup ---
@@ -92,7 +73,6 @@ class HomeFragment : Fragment() {
         // --- Swipe to Refresh Setup ---
 
         binding.swipeRefresh.setOnRefreshListener {
-            Log.d(TAG, "Swipe to refresh onRefresh()")
             viewModel.loadFromStart(requireContext())
         }
         binding.swipeRefresh.setProgressBackgroundColorSchemeResource(R.color.secondaryColor)
@@ -107,7 +87,7 @@ class HomeFragment : Fragment() {
                 it,
                 viewModel.error.value,
                 binding.progress,
-                binding.storyList,
+                binding.commentList,
                 binding.swipeRefresh
             )
         }
@@ -133,14 +113,5 @@ class HomeFragment : Fragment() {
                 viewModel.loadFromStart(requireContext())
             }
         }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.swipe_refresh, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    companion object {
-        private const val TAG = "HomeFragment"
     }
 }

@@ -95,4 +95,6 @@
     <string name="register_verify_match">Passwords don\'t match.</string>
     <string name="fragment_login">Login</string>
     <string name="fragment_register">Register</string>
+    <string name="fragment_recent">Recent Stories</string>
+    <string name="fragment_newest_comments">Newest Comments</string>
 </resources>

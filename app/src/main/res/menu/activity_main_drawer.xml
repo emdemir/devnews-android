@@ -9,8 +9,16 @@
             android:icon="@drawable/ic_baseline_home_24"
             android:title="@string/menu_home" />
         <item
-            android:id="@+id/nav_message_list"
+            android:id="@+id/nav_recent"
+            android:icon="@drawable/ic_baseline_new_24"
+            android:title="@string/fragment_recent" />
+        <item
+            android:id="@+id/nav_newest_comments"
             android:icon="@drawable/ic_baseline_message_24"
+            android:title="@string/fragment_newest_comments" />
+        <item
+            android:id="@+id/nav_message_list"
+            android:icon="@drawable/ic_baseline_mail_24"
             android:title="@string/menu_message_list" />
     </group>
 </menu>

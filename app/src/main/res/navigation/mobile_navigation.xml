@@ -14,5 +14,13 @@
         android:name="org.devnews.android.ui.home.messages.MessageListFragment"
         android:label="@string/fragment_message_list"
         tools:layout="@layout/fragment_message_list" />
+    <fragment
+        android:id="@+id/nav_recent"
+        android:name="org.devnews.android.ui.home.recent.RecentFragment"
+        android:label="@string/fragment_recent" />
+    <fragment
+        android:id="@+id/nav_newest_comments"
+        android:name="org.devnews.android.ui.home.comments.NewestCommentsFragment"
+        android:label="@string/fragment_newest_comments" />
 
 </navigation>
