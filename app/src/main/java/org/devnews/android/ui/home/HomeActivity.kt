@@ -1,9 +1,11 @@
 package org.devnews.android.ui.home
 
+import android.accounts.Account
 import android.accounts.AccountManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
@@ -19,7 +21,9 @@ import com.auth0.android.jwt.JWT
 import com.google.android.material.navigation.NavigationView
 import com.squareup.picasso.Picasso
 import org.devnews.android.R
+import org.devnews.android.account.DevNewsAuthenticator
 import org.devnews.android.account.getAccountDetails
+import org.devnews.android.account.updateAccount
 import org.devnews.android.base.Activity
 import org.devnews.android.databinding.ActivityMainBinding
 import org.devnews.android.ui.home.messages.MessageListFragment
@@ -62,9 +66,31 @@ class HomeActivity : Activity() {
         val obtainDetailsTask = Thread {
             // Fetch the Identity Token
             val accountDetails = getAccountDetails(this)
+            val accountName = accountDetails.getString(AccountManager.KEY_ACCOUNT_NAME)
+            val accountType = accountDetails.getString(AccountManager.KEY_ACCOUNT_TYPE)
             val identityToken = accountDetails.getString(AccountManager.KEY_AUTHTOKEN)
                 ?: return@Thread
             val jwt = JWT(identityToken)
+
+            // XXX: This is here because there really isn't any better place to put this.
+            // Here's the verbose explanation: If we fix the username from the Authenticator, it
+            // usually causes an issue during first login, because this function and the HomeFragment
+            // loading the stories will cause a token to be obtained for googleuser twice,
+            // and it will not be able to find googleuser the second time and will pop up a Re-enter
+            // credentials window. Because that window is not escapable (TokenInterceptor's lock
+            // waits on a response from AccountManager), we've now deadlocked ourselves.
+
+            // Check if the username of the account that's saved on the device matches
+            // the one that was sent back to us.
+            if (jwt.subject != accountName) {
+                val account = Account(accountName, accountType)
+                updateAccount(
+                    this,
+                    jwt.subject!!,
+                    AccountManager.get(this).getPassword(account),
+                    initialUsername = account.name
+                )
+            }
 
             // Fill in the sidebar details
             runOnUiThread {

@@ -17,6 +17,7 @@ import org.devnews.android.R
 import org.devnews.android.repository.AuthRepository
 import retrofit2.HttpException
 import java.lang.IllegalStateException
+import java.util.concurrent.locks.ReentrantLock
 
 
 class DevNewsAuthenticator(private val context: Context) : AbstractAccountAuthenticator(context) {
@@ -34,6 +35,8 @@ class DevNewsAuthenticator(private val context: Context) : AbstractAccountAuthen
 
         private const val TAG = "DevNewsAuthenticator"
     }
+
+    private val lock = ReentrantLock()
 
     /**
      * Get the access token for the given account.
@@ -76,7 +79,8 @@ class DevNewsAuthenticator(private val context: Context) : AbstractAccountAuthen
         // Okay, time to try to re-authenticate. Use the token/password given to us by the user
         // (or the 3rd party authenticator) with the server.
         val source = manager.getUserData(account, KEY_ACCOUNT_SOURCE)
-            ?: throw IllegalStateException("Didn't get account source?!")
+            ?: throw IllegalStateException("Account source is null?!")
+
         val password = manager.getPassword(account)
         if (password != null) {
             Log.d(TAG, "Getting access token from server...")
@@ -96,6 +100,8 @@ class DevNewsAuthenticator(private val context: Context) : AbstractAccountAuthen
             } catch (e: HttpException) {
                 Log.w(TAG, "Got an HTTP error while trying to fetch the access token...", e)
             }
+        } else {
+            Log.w(TAG, "Password wasn't in cache?!")
         }
 
         return token
@@ -107,7 +113,8 @@ class DevNewsAuthenticator(private val context: Context) : AbstractAccountAuthen
         authTokenType: String?,
         options: Bundle?
     ): Bundle {
-        Log.d(TAG, "getToken()")
+        Log.d(TAG, "getAuthToken($account, $authTokenType)")
+        lock.lock()
         // First, check whether we already have a token in cache
         val manager = AccountManager.get(context)
         var token = manager.peekAuthToken(account, authTokenType)
@@ -148,23 +155,6 @@ class DevNewsAuthenticator(private val context: Context) : AbstractAccountAuthen
                             Log.d(TAG, "Got the identity token!")
                             manager.setAuthToken(account, AUTHTOKEN_IDENTITY, token)
                             token = authResponse.identityToken
-
-                            // Check if the username of the account that's saved on the device matches
-                            // the one that was sent back to us.
-                            val tokenJWT = JWT(authResponse.identityToken)
-                            if (tokenJWT.subject != account.name) {
-                                Log.d(
-                                    TAG,
-                                    "Updating the account name with the one from the server."
-                                )
-                                updateAccount(
-                                    context,
-                                    tokenJWT.subject!!,
-                                    manager.getPassword(account),
-                                    accessToken,
-                                    account.name
-                                )
-                            }
                         } catch (e: HttpException) {
                             Log.w(
                                 TAG,
@@ -180,8 +170,11 @@ class DevNewsAuthenticator(private val context: Context) : AbstractAccountAuthen
             }
         }
 
+        Log.d(TAG, "Exited the runBlocking area")
+
         if (!TextUtils.isEmpty(token)) {
             Log.d(TAG, "Got the token successfully")
+            lock.unlock()
             return bundleOf(
                 AccountManager.KEY_ACCOUNT_NAME to account.name,
                 AccountManager.KEY_ACCOUNT_TYPE to account.type,
@@ -197,6 +190,7 @@ class DevNewsAuthenticator(private val context: Context) : AbstractAccountAuthen
             putExtra(AddAccountActivity.KEY_ADDING_NEW_ACCOUNT, false)
             putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response)
         }
+        lock.unlock()
         return bundleOf(
             AccountManager.KEY_INTENT to intent
         )

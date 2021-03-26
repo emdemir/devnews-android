@@ -27,11 +27,8 @@ fun addAccount(
     val manager = AccountManager.get(context)
     val account = Account(username, DevNewsAuthenticator.ACCOUNT_TYPE)
 
-    manager.addAccountExplicitly(
-        account, password, bundleOf(
-            DevNewsAuthenticator.KEY_ACCOUNT_SOURCE to source
-        )
-    )
+    manager.addAccountExplicitly(account, password, bundleOf())
+    manager.setUserData(account, DevNewsAuthenticator.KEY_ACCOUNT_SOURCE, source)
     if (token != null)
         manager.setAuthToken(account, DevNewsAuthenticator.AUTHTOKEN_ACCESS, token)
 }

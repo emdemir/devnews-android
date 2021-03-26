@@ -11,9 +11,15 @@ import android.os.IBinder
  * when the system asks for it.
  */
 class AccountService : Service() {
+    private lateinit var authenticator: DevNewsAuthenticator
+
+    override fun onCreate() {
+        super.onCreate()
+        authenticator = DevNewsAuthenticator(this)
+    }
     override fun onBind(intent: Intent?): IBinder? {
         if (intent?.action == ACTION_AUTHENTICATOR_INTENT) {
-            return DevNewsAuthenticator(this).iBinder
+            return authenticator.iBinder
         }
 
         return null
