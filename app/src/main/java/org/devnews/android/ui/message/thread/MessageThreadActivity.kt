@@ -13,7 +13,7 @@ import org.devnews.android.R
 import org.devnews.android.base.Activity
 import org.devnews.android.base.CollectionViewModel
 import org.devnews.android.databinding.ActivityMessageThreadBinding
-import org.devnews.android.repository.adapters.MessageThreadAdapter
+import org.devnews.android.ui.adapters.MessageThreadAdapter
 import org.devnews.android.utils.setErrorState
 import org.devnews.android.utils.setProgressState
 import org.devnews.android.utils.setupRecyclerView

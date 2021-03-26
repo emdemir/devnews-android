@@ -1,4 +1,4 @@
-package org.devnews.android.repository.adapters
+package org.devnews.android.ui.adapters
 
 import android.text.TextUtils
 import android.view.LayoutInflater

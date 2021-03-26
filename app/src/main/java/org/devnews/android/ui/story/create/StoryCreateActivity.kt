@@ -14,7 +14,7 @@ import com.google.android.material.snackbar.Snackbar
 import org.devnews.android.DevNews
 import org.devnews.android.base.Activity
 import org.devnews.android.databinding.ActivityStoryCreateBinding
-import org.devnews.android.repository.adapters.TagAdapter
+import org.devnews.android.ui.adapters.TagAdapter
 import org.devnews.android.ui.story.details.StoryDetailsActivity.Companion.launchStoryDetails
 import org.devnews.android.utils.TextChanged
 import org.devnews.android.utils.dpToPx

@@ -20,8 +20,8 @@ import org.devnews.android.DevNews
 import org.devnews.android.R
 import org.devnews.android.base.Activity
 import org.devnews.android.databinding.ActivityStoryDetailsBinding
-import org.devnews.android.repository.adapters.CommentAdapter
-import org.devnews.android.repository.adapters.StoryAdapter
+import org.devnews.android.ui.adapters.CommentAdapter
+import org.devnews.android.ui.adapters.StoryAdapter
 import org.devnews.android.ui.story.details.commenting.CreateCommentDialogFragment
 import org.devnews.android.ui.story.details.commenting.CreateCommentDialogFragment.Companion.CREATE_COMMENT_REQUEST
 import org.devnews.android.ui.story.details.commenting.CreateCommentDialogFragment.Companion.KEY_COMMENT

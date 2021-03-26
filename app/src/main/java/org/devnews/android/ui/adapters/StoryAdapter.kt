@@ -1,4 +1,4 @@
-package org.devnews.android.repository.adapters
+package org.devnews.android.ui.adapters
 
 import android.text.format.DateUtils
 import android.text.format.DateUtils.MINUTE_IN_MILLIS

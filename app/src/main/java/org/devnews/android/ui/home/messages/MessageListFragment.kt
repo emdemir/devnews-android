@@ -10,7 +10,7 @@ import com.google.android.material.snackbar.Snackbar
 import org.devnews.android.DevNews
 import org.devnews.android.R
 import org.devnews.android.databinding.FragmentMessageListBinding
-import org.devnews.android.repository.adapters.MessageListAdapter
+import org.devnews.android.ui.adapters.MessageListAdapter
 import org.devnews.android.ui.message.thread.MessageThreadActivity.Companion.launchMessageThread
 import org.devnews.android.utils.setErrorState
 import org.devnews.android.utils.setProgressState

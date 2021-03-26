@@ -11,7 +11,7 @@ import com.google.android.material.snackbar.Snackbar
 import org.devnews.android.DevNews
 import org.devnews.android.R
 import org.devnews.android.databinding.FragmentNewestCommentsBinding
-import org.devnews.android.repository.adapters.CommentAdapter
+import org.devnews.android.ui.adapters.CommentAdapter
 import org.devnews.android.ui.story.details.StoryDetailsActivity.Companion.launchStoryDetails
 import org.devnews.android.utils.setErrorState
 import org.devnews.android.utils.setProgressState

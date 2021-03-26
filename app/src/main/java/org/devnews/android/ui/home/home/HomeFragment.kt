@@ -10,7 +10,7 @@ import com.google.android.material.snackbar.Snackbar
 import org.devnews.android.DevNews
 import org.devnews.android.R
 import org.devnews.android.databinding.FragmentHomeBinding
-import org.devnews.android.repository.adapters.StoryAdapter
+import org.devnews.android.ui.adapters.StoryAdapter
 import org.devnews.android.ui.story.create.StoryCreateActivity.Companion.launchStoryCreate
 import org.devnews.android.ui.story.details.StoryDetailsActivity.Companion.launchStoryDetails
 import org.devnews.android.ui.tag.TagActivity.Companion.launchTagActivity
